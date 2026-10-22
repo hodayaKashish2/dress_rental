@@ -15,62 +15,12 @@ function isSchemaError(message: string) {
 }
 
 export async function GET(request: Request) {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: 'Supabase לא מוגדר' }, { status: 503 });
-  }
-
   const dressId = new URL(request.url).searchParams.get('dressId');
   if (!dressId) {
     return NextResponse.json({ error: 'חסר מזהה שמלה' }, { status: 400 });
   }
 
-  try {
-    const supabase = getSupabaseAdmin();
-    let query = supabase
-      .from('dress_ratings')
-      .select('id, dress_id, customer_name, stars, review_text, created_at, status')
-      .eq('dress_id', dressId)
-      .order('created_at', { ascending: false })
-      .limit(20);
-
-    const withStatus = await query.eq('status', 'approved');
-    let rows: Array<{
-      id: unknown;
-      dress_id: unknown;
-      customer_name: string;
-      stars: unknown;
-      review_text: string;
-      created_at: string;
-    }> | null = withStatus.data;
-    let error = withStatus.error;
-
-    if (error?.message && isSchemaError(error.message)) {
-      const fallback = await supabase
-        .from('dress_ratings')
-        .select('id, dress_id, customer_name, stars, review_text, created_at')
-        .eq('dress_id', dressId)
-        .order('created_at', { ascending: false })
-        .limit(20);
-      rows = fallback.data;
-      error = fallback.error;
-    }
-
-    if (error) throw error;
-
-    return NextResponse.json(
-      (rows ?? []).map((r) => ({
-        id: String(r.id),
-        dress_id: String(r.dress_id),
-        customer_name: r.customer_name,
-        stars: Number(r.stars),
-        review_text: r.review_text,
-        created_at: r.created_at,
-      }))
-    );
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'שגיאה';
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  return NextResponse.json([]);
 }
 
 export async function POST(request: Request) {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseAdmin, isSupabaseConfigured, supabaseEnvStatus } from '@/lib/supabase/server';
+import { isSupabaseConfigured, supabaseEnvStatus } from '@/lib/supabase/server';
 import { formatSiteUsersDbError } from '@/lib/db-errors';
 import { getEmailConfigStatus } from '@/lib/email';
 
@@ -28,7 +28,9 @@ export async function GET() {
     }
   }
 
-  const hint = siteUsersError
+  const hint = supabase.sandbox
+    ? 'מאגר ניסוי — אין חיבור ל-Supabase. הקטלוג מ-lib/sandbox-catalog.ts'
+    : siteUsersError
     ? formatSiteUsersDbError(siteUsersError)
     : !supabase.hasUrl
       ? 'חסר NEXT_PUBLIC_SUPABASE_URL ב-Vercel'

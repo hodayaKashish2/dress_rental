@@ -1,32 +1,29 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
+const SANDBOX_MESSAGE =
+  'מאגר ניסוי (dress_rental) — אין חיבור ל-Supabase. הקטלוג נטען משמלות לדוגמה בקוד.';
+
+/**
+ * מאגר ניסוי: תמיד מנותק ממסד הייצור.
+ * גם אם יש מפתחות ב-.env — לא מתחברים.
+ */
 export function getSupabaseAdmin(): SupabaseClient {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-
-  if (!url || !key) {
-    throw new Error('חסרים משתני סביבה של Supabase (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)');
-  }
-
-  return createClient(url, key, {
-    auth: { persistSession: false },
-  });
+  throw new Error(SANDBOX_MESSAGE);
 }
 
 export function isSupabaseConfigured(): boolean {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  return Boolean(url && key);
+  return false;
 }
 
 export function supabaseEnvStatus() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || '';
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || '';
   return {
-    hasUrl: Boolean(url),
-    hasServiceKey: Boolean(key),
-    configured: Boolean(url && key),
-    urlHost: url ? url.replace(/^https?:\/\//, '').split('/')[0] : null,
-    keyLength: key.length,
+    hasUrl: false,
+    hasServiceKey: false,
+    configured: false,
+    urlHost: null as string | null,
+    keyLength: 0,
+    sandbox: true,
+    hint: SANDBOX_MESSAGE,
   };
 }
+
