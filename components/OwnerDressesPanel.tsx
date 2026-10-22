@@ -1,0 +1,986 @@
+'use client';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import OwnerBookingRequestsPanel from '@/components/OwnerBookingRequestsPanel';
+import DressImageFill from '@/components/DressImageFill';
+import DressCalendar from '@/components/DressCalendar';
+import {
+  formatFeaturedUntilDate,
+  hasActiveFeaturedBoost,
+  FEATURED_REWARD_DAYS,
+} from '@/lib/dress-ranking';
+import { isPastDate, splitBookingsByEventDate, todayDateString } from '@/lib/booking-dates';
+import {
+  BOOKINGS_CANCELLED_RETENTION_NOTE,
+  BOOKINGS_CANCELLED_SECTION_TITLE,
+  BOOKINGS_PAST_RETENTION_NOTE,
+  BOOKINGS_PAST_SECTION_TITLE,
+} from '@/lib/retention';
+import { matchesCatalogTextFilter } from '@/lib/catalog-text-filter';
+
+export type OwnerRentalDress = {
+  id: string;
+  name: string;
+  price: number;
+  size: string;
+  city: string;
+  color?: string;
+  description?: string;
+  status: string;
+  images: string[];
+  rental_count: number;
+  featured_boost?: number;
+  featured_until?: string | null;
+  booked_dates: string[];
+  has_pending_update?: boolean;
+};
+
+export type OwnerBookingRow = {
+  id: number;
+  dress_id: number;
+  dress_name: string;
+  customer_name?: string;
+  customer_phone?: string;
+  event_date: string;
+  status: string;
+  owner_reject_reason?: string | null;
+  owner_responded_at?: string | null;
+  created_at?: string | null;
+};
+
+const DRESS_STATUS: Record<string, string> = {
+  approved: 'מפורסמת ✓',
+  pending: 'ממתינה לאישור',
+  removed: 'הוסרה',
+  pending_update: 'עדכון ממתין',
+};
+
+const BOOKING_STATUS: Record<string, string> = {
+  confirmed: 'הזמנה מאושרת ✓',
+  pending_owner_approval: 'ממתין לאישורך',
+  pending_payment: 'ממתין לתשלום',
+  awaiting_admin_approval: 'ממתין לאישור תשלום',
+  cancelled: 'בוטלה',
+};
+
+const PAYMENT_PENDING_STATUSES = new Set(['pending_payment', 'awaiting_admin_approval']);
+
+function isConfirmedBooking(status: string) {
+  return status === 'confirmed';
+}
+
+function isPendingApprovalBooking(status: string) {
+  return PAYMENT_PENDING_STATUSES.has(status);
+}
+
+function isOwnerRequestBooking(status: string) {
+  return status === 'pending_owner_approval';
+}
+
+function getConfirmedBookings(bookings: OwnerBookingRow[]) {
+  return bookings.filter((b) => isConfirmedBooking(b.status));
+}
+
+function getPendingApprovalBookings(bookings: OwnerBookingRow[]) {
+  return bookings.filter((b) => isPendingApprovalBooking(b.status));
+}
+
+type DressFilter = 'all' | 'available' | 'booked' | 'pending';
+type DressSort = 'recent' | 'name' | 'bookings' | 'rentals';
+
+const LIST_SCROLL_CLASS =
+  'max-h-56 sm:max-h-72 lg:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain space-y-2 pr-0.5';
+
+function getDressBookings(dressId: string, bookings: OwnerBookingRow[]) {
+  return bookings.filter((b) => String(b.dress_id) === String(dressId));
+}
+
+function getDressRentalSummary(bookings: OwnerBookingRow[]) {
+  const confirmed = getConfirmedBookings(bookings);
+  if (confirmed.length === 0) {
+    return { badge: '🟢 פנויה', detail: '', hasBookings: false, hasUpcoming: false };
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = confirmed
+    .filter((b) => b.event_date >= today)
+    .sort((a, b) => a.event_date.localeCompare(b.event_date));
+
+  if (upcoming.length === 0) {
+    return {
+      badge: '📋 הושכרה בעבר',
+      detail: '',
+      hasBookings: true,
+      hasUpcoming: false,
+    };
+  }
+
+  return {
+    badge: `📅 ${upcoming.length} הזמנ${upcoming.length === 1 ? 'ה קרובה' : 'ות קרובות'}`,
+    detail: `הבאה: ${upcoming[0].event_date}`,
+    hasBookings: true,
+    hasUpcoming: true,
+  };
+}
+
+function formatHebrewDate(date: string) {
+  try {
+    return new Date(`${date}T00:00:00`).toLocaleDateString('he-IL', {
+      day: 'numeric',
+      month: 'short',
+    });
+  } catch {
+    return date;
+  }
+}
+
+function pickDefaultDressId(dresses: OwnerRentalDress[], ownerBookings: OwnerBookingRow[]): string | null {
+  if (dresses.length === 0) return null;
+
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = [...ownerBookings]
+    .filter(
+      (b) =>
+        b.event_date >= today &&
+        isConfirmedBooking(b.status)
+    )
+    .sort((a, b) => a.event_date.localeCompare(b.event_date))[0];
+
+  if (upcoming) {
+    const dressId = String(upcoming.dress_id);
+    if (dresses.some((d) => d.id === dressId)) return dressId;
+  }
+
+  return dresses[0].id;
+}
+
+function nearestBookingDate(bookings: OwnerBookingRow[]) {
+  const today = new Date().toISOString().slice(0, 10);
+  const sorted = getConfirmedBookings(bookings)
+    .filter((b) => b.event_date >= today)
+    .sort((a, b) => a.event_date.localeCompare(b.event_date));
+  return sorted[0]?.event_date;
+}
+
+function cancelledBookingDetail(booking: OwnerBookingRow) {
+  if (booking.owner_reject_reason?.trim()) {
+    return booking.owner_reject_reason.trim();
+  }
+  return 'בוטלה על ידי השוכרת';
+}
+
+type Props = {
+  dresses: OwnerRentalDress[];
+  ownerBookings: OwnerBookingRow[];
+  cancelledOwnerBookings?: OwnerBookingRow[];
+  loading: boolean;
+  onAddDress: () => void;
+  onEditDress: (dress: OwnerRentalDress) => void;
+  onRefresh?: () => void;
+};
+
+const ADD_DRESS_BTN =
+  'cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-white font-bold border border-[#c9a227] hover:from-[#b8860b] hover:to-[#8b6508] disabled:opacity-60 disabled:pointer-events-none disabled:transform-none';
+
+export default function OwnerDressesPanel({
+  dresses,
+  ownerBookings,
+  cancelledOwnerBookings = [],
+  loading,
+  onAddDress,
+  onEditDress,
+  onRefresh,
+}: Props) {
+  const pendingSubmissionDresses = useMemo(
+    () => dresses.filter((d) => d.status === 'pending'),
+    [dresses]
+  );
+  const activeDresses = useMemo(
+    () => dresses.filter((d) => d.status !== 'removed' && d.status !== 'pending'),
+    [dresses]
+  );
+  const removedDresses = useMemo(
+    () => dresses.filter((d) => d.status === 'removed'),
+    [dresses]
+  );
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<DressFilter>('all');
+  const [sort, setSort] = useState<DressSort>('recent');
+  const [showUpcoming, setShowUpcoming] = useState(true);
+  const [showPastBookings, setShowPastBookings] = useState(false);
+  const [showPendingApproval, setShowPendingApproval] = useState(false);
+  const [showCancelledBookings, setShowCancelledBookings] = useState(false);
+  const [showRemovedDresses, setShowRemovedDresses] = useState(false);
+  const [showSelectedPastBookings, setShowSelectedPastBookings] = useState(false);
+  const [selectedDressId, setSelectedDressId] = useState<string | null>(null);
+  const rowRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  const dressesWithBookings = useMemo(
+    () =>
+      activeDresses.filter((d) => {
+        const today = new Date().toISOString().slice(0, 10);
+        return getConfirmedBookings(getDressBookings(d.id, ownerBookings)).some(
+          (b) => b.event_date >= today
+        );
+      }).length,
+    [activeDresses, ownerBookings]
+  );
+
+  const confirmedOwnerBookings = useMemo(
+    () => getConfirmedBookings(ownerBookings),
+    [ownerBookings]
+  );
+
+  const { upcoming: upcomingOwnerBookings, past: pastOwnerBookings } = useMemo(
+    () => splitBookingsByEventDate(confirmedOwnerBookings),
+    [confirmedOwnerBookings]
+  );
+
+  const upcomingBookings = upcomingOwnerBookings.slice(0, 8);
+
+  const pendingOwnerRequests = useMemo(
+    () =>
+      ownerBookings
+        .filter((b) => isOwnerRequestBooking(b.status))
+        .sort((a, b) => a.event_date.localeCompare(b.event_date)),
+    [ownerBookings]
+  );
+
+  const pendingApprovalBookings = useMemo(
+    () =>
+      getPendingApprovalBookings(ownerBookings).sort((a, b) =>
+        a.event_date.localeCompare(b.event_date)
+      ),
+    [ownerBookings]
+  );
+
+  const cancelledBookings = useMemo(
+    () =>
+      [...cancelledOwnerBookings].sort((a, b) => {
+        const aRef = a.owner_responded_at || a.created_at || a.event_date;
+        const bRef = b.owner_responded_at || b.created_at || b.event_date;
+        return bRef.localeCompare(aRef);
+      }),
+    [cancelledOwnerBookings]
+  );
+
+  const filteredDresses = useMemo(() => {
+    const query = searchQuery.trim();
+    let list = activeDresses.filter((d) => {
+      if (!query) return true;
+      return (
+        matchesCatalogTextFilter(d.name, query) ||
+        matchesCatalogTextFilter(d.city, query) ||
+        matchesCatalogTextFilter(d.size, query) ||
+        matchesCatalogTextFilter(d.color || '', query)
+      );
+    });
+
+    list = list.filter((d) => {
+      const today = new Date().toISOString().slice(0, 10);
+      const bookings = getConfirmedBookings(getDressBookings(d.id, ownerBookings));
+      const upcomingBookingsForDress = bookings.filter((b) => b.event_date >= today);
+      const hasUpcomingBookings = upcomingBookingsForDress.length > 0;
+      if (filter === 'available') return bookings.length === 0 && d.status === 'approved' && !d.has_pending_update;
+      if (filter === 'booked') return hasUpcomingBookings;
+      if (filter === 'pending') return d.status === 'pending' || Boolean(d.has_pending_update);
+      return true;
+    });
+
+    list = [...list].sort((a, b) => {
+      if (sort === 'name') return a.name.localeCompare(b.name, 'he');
+      if (sort === 'rentals') return b.rental_count - a.rental_count;
+      if (sort === 'bookings') {
+        const aCount = getConfirmedBookings(getDressBookings(a.id, ownerBookings)).length;
+        const bCount = getConfirmedBookings(getDressBookings(b.id, ownerBookings)).length;
+        return bCount - aCount;
+      }
+      return 0;
+    });
+
+    return list;
+  }, [activeDresses, ownerBookings, searchQuery, filter, sort]);
+
+  useEffect(() => {
+    if (loading || !selectedDressId) return;
+    if (!filteredDresses.some((dress) => dress.id === selectedDressId)) {
+      setSelectedDressId(null);
+    }
+  }, [loading, filteredDresses, selectedDressId]);
+
+  const selectedDress = useMemo(() => {
+    if (!selectedDressId) return null;
+    return filteredDresses.find((d) => d.id === selectedDressId) ?? null;
+  }, [selectedDressId, filteredDresses]);
+
+  const selectedBookings = selectedDress
+    ? getConfirmedBookings(getDressBookings(selectedDress.id, ownerBookings))
+    : [];
+  const selectedUpcomingBookings = selectedBookings.filter((b) => !isPastDate(b.event_date));
+  const selectedPastBookings = selectedBookings.filter((b) => isPastDate(b.event_date));
+  const selectedConfirmedDates = selectedUpcomingBookings.map((b) => b.event_date);
+  const calendarFocusDate = nearestBookingDate(selectedBookings);
+
+  const filterChips: { id: DressFilter; label: string }[] = [
+    { id: 'all', label: 'הכל' },
+    { id: 'available', label: 'פנויות' },
+    { id: 'booked', label: 'עם הזמנות' },
+    { id: 'pending', label: 'ממתינות לאישור' },
+  ];
+
+  function handleSearchChange(value: string) {
+    setSearchQuery(value);
+  }
+
+  function clearSearchFilter() {
+    setSearchQuery('');
+  }
+
+  function handleFilterChange(next: DressFilter) {
+    setFilter(next);
+  }
+
+  function handleSelectDress(dressId: string) {
+    const inFilteredList = filteredDresses.some((d) => d.id === dressId);
+    if (!inFilteredList) {
+      setSearchQuery('');
+      setFilter('all');
+    }
+    setSelectedDressId(dressId);
+  }
+
+  useEffect(() => {
+    if (loading || selectedDressId || filteredDresses.length === 0) return;
+    const defaultId = pickDefaultDressId(filteredDresses, ownerBookings);
+    if (defaultId) setSelectedDressId(defaultId);
+  }, [loading, selectedDressId, filteredDresses, ownerBookings]);
+
+  useEffect(() => {
+    if (!selectedDressId || !selectedDress) return;
+    setShowSelectedPastBookings(false);
+    const row = rowRefs.current[selectedDressId];
+    if (row) {
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [selectedDressId, selectedDress]);
+
+  if (loading) {
+    return <p className="text-sm text-[#6e634c] animate-pulse">טוען שמלות...</p>;
+  }
+
+  if (activeDresses.length === 0 && removedDresses.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl border border-[#eadaaf] p-8 text-center space-y-4">
+        <p className="text-sm text-[#6e634c]">אין שמלות. הוסיפי שמלה חדשה!</p>
+        <button
+          type="button"
+          onClick={onAddDress}
+          className={`px-4 py-2 rounded-xl text-xs shrink-0 ${ADD_DRESS_BTN}`}
+        >
+          ➕ הוספת שמלה
+        </button>
+      </div>
+    );
+  }
+
+  if (activeDresses.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-between items-start flex-wrap gap-3">
+          <div>
+            <h2 className="font-black text-xl">👗 השמלות שלי</h2>
+            <p className="text-xs text-[#6e634c] mt-1">אין שמלות פעילות כרגע.</p>
+          </div>
+          <button
+            type="button"
+            onClick={onAddDress}
+            className={`px-4 py-2 rounded-xl text-xs font-bold shrink-0 ${ADD_DRESS_BTN}`}
+          >
+            ➕ הוספת שמלה
+          </button>
+        </div>
+        {removedDresses.length > 0 && (
+          <div className="bg-neutral-50 rounded-2xl border border-neutral-200 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowRemovedDresses((v) => !v)}
+              className="w-full flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-neutral-700 bg-neutral-100 hover:bg-neutral-200/80 transition-colors"
+            >
+              <span>🗂️ שמלות שהוסרו מהאתר ({removedDresses.length})</span>
+              <span>{showRemovedDresses ? '▲' : '▼'}</span>
+            </button>
+            {showRemovedDresses && (
+              <ul className="divide-y divide-neutral-200 max-h-56 overflow-y-auto">
+                {removedDresses.map((dress) => (
+                  <li key={dress.id} className="px-4 py-3 flex gap-3 items-center">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-neutral-700 truncate">{dress.name}</p>
+                      <p className="text-[10px] text-neutral-500 mt-0.5">
+                        ₪{dress.price} · {dress.size} · {dress.city}
+                      </p>
+                    </div>
+                    <span className="text-[9px] shrink-0 bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded-full">
+                      הוסרה
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-start flex-wrap gap-3">
+        <div>
+          <h2 className="font-black text-xl">👗 השמלות שלי</h2>
+          <p className="text-xs text-[#6e634c] mt-1 leading-relaxed max-w-lg">
+            רשימה מסודרת לניהול שמלות — בחרי שמלה לראות לוח שנה והזמנות. תשלום מאובטח דרך האתר מעניק חשיפה מוגברת בקטלוג למשך {FEATURED_REWARD_DAYS} יום.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onAddDress}
+          className={`px-4 py-2 rounded-xl text-xs font-bold shrink-0 ${ADD_DRESS_BTN}`}
+        >
+          ➕ הוספת שמלה
+        </button>
+      </div>
+
+      {pendingSubmissionDresses.length > 0 && (
+        <div className="bg-amber-50 rounded-2xl border-2 border-amber-200 overflow-hidden">
+          <div className="px-4 py-3 border-b border-amber-200/80 bg-amber-100/50">
+            <h3 className="text-sm font-black text-amber-900">
+              ⏳ שמלות שממתינות לאישור ({pendingSubmissionDresses.length})
+            </h3>
+            <p className="text-[11px] text-amber-900/85 mt-1 leading-relaxed">
+              השמלות עדיין לא בקטלוג. ניתן לערוך פרטים ותמונות כאן — למשל להחליף תמונות — עד לאישור ההנהלה.
+            </p>
+          </div>
+          <ul className="divide-y divide-amber-200/60">
+            {pendingSubmissionDresses.map((dress) => (
+              <li key={dress.id} className="px-4 py-3 flex gap-3 items-center">
+                {dress.images?.[0] ? (
+                  <DressImageFill
+                    src={dress.images[0]}
+                    alt=""
+                    className="w-14 h-16 shrink-0 rounded-lg border border-amber-200"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-14 h-16 rounded-lg border border-dashed border-amber-300 bg-white flex items-center justify-center text-xl shrink-0">
+                    👗
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-bold text-[#3d2f24] truncate">{dress.name}</p>
+                  <p className="text-[10px] text-[#6e634c] mt-0.5">
+                    ₪{dress.price} · {dress.size} · {dress.city}
+                  </p>
+                  <span className="inline-block mt-1.5 text-[9px] bg-amber-200/80 text-amber-950 px-2 py-0.5 rounded-full font-bold">
+                    ממתינה לאישור
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onEditDress(dress)}
+                  className="shrink-0 px-3 py-2 rounded-xl text-[11px] font-bold bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-white border border-[#c9a227] hover:from-[#b8860b] hover:to-[#8b6508] transition-colors"
+                >
+                  ✏️ עריכה
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {onRefresh && (
+        <OwnerBookingRequestsPanel requests={pendingOwnerRequests} onRefresh={onRefresh} />
+      )}
+
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="bg-white rounded-xl border border-[#eadaaf] p-3">
+          <p className="text-lg font-black text-[#3d2f24]">{activeDresses.length}</p>
+          <p className="text-[10px] text-[#6e634c]">שמלות פעילות</p>
+        </div>
+        <div className="bg-white rounded-xl border border-[#eadaaf] p-3">
+          <p className="text-lg font-black text-green-700">{activeDresses.length - dressesWithBookings}</p>
+          <p className="text-[10px] text-[#6e634c]">פנויות</p>
+        </div>
+        <div className="bg-white rounded-xl border border-[#eadaaf] p-3">
+          <p className="text-lg font-black text-[#b8860b]">{dressesWithBookings}</p>
+          <p className="text-[10px] text-[#6e634c]">עם הזמנות</p>
+        </div>
+      </div>
+
+      {upcomingBookings.length > 0 && (
+        <div className="bg-white rounded-2xl border border-[#eadaaf] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowUpcoming((v) => !v)}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-[#8b6508] bg-[#fffdf8] hover:bg-[#faf8f3]"
+          >
+            <span>📌 הזמנות קרובות ({upcomingBookings.length})</span>
+            <span>{showUpcoming ? '▲' : '▼'}</span>
+          </button>
+          {showUpcoming && (
+            <ul className="divide-y divide-[#f0e6cc] max-h-48 overflow-y-auto">
+              {upcomingBookings.map((b) => (
+                <li key={b.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectDress(String(b.dress_id))}
+                    className="w-full text-right px-4 py-2.5 hover:bg-[#fffdf8] transition-colors flex justify-between gap-2 items-center"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#3d2f24] truncate">{b.dress_name}</p>
+                      <p className="text-[10px] text-[#8b6508]">
+                        {formatHebrewDate(b.event_date)} · {b.customer_name || 'שוכרת'}
+                      </p>
+                    </div>
+                    <span className="text-[9px] shrink-0 bg-[#f4ebd4] px-2 py-0.5 rounded-full">
+                      {BOOKING_STATUS[b.status] || b.status}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      <div className="bg-white rounded-2xl border border-[#eadaaf] p-3 sm:p-4 space-y-3">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            placeholder="חיפוש לפי שם, עיר, מידה או צבע..."
+            className="flex-1 p-2.5 bg-neutral-50 border border-[#decfa8] rounded-xl text-xs text-[#2c261a] placeholder:text-[#9a7b4f] focus:outline-none focus:border-[#d4af37]"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={clearSearchFilter}
+              className="px-3 py-2.5 border border-[#decfa8] text-[#8b6508] rounded-xl text-xs font-bold shrink-0"
+            >
+              נקה
+            </button>
+          )}
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as DressSort)}
+            className="p-2.5 bg-neutral-50 border border-[#decfa8] rounded-xl text-xs text-[#2c261a] sm:w-40"
+            aria-label="מיון שמלות"
+          >
+            <option value="recent">חדשות ראשון</option>
+            <option value="name">לפי שם</option>
+            <option value="bookings">לפי הזמנות</option>
+            <option value="rentals">לפי השכרות</option>
+          </select>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5">
+          {filterChips.map((chip) => (
+            <button
+              key={chip.id}
+              type="button"
+              onClick={() => handleFilterChange(chip.id)}
+              className={`text-[10px] font-bold px-3 py-1.5 rounded-full border transition-colors ${
+                filter === chip.id
+                  ? 'bg-[#d4af37] text-white border-[#d4af37]'
+                  : 'bg-white text-[#8b6508] border-[#decfa8] hover:bg-[#fffdf8]'
+              }`}
+            >
+              {chip.label}
+            </button>
+          ))}
+        </div>
+
+        <p className="text-[10px] text-[#9a7b4f]">
+          {filteredDresses.length} שמלות{searchQuery || filter !== 'all' ? ' (מסוננות)' : ''}
+        </p>
+      </div>
+
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-4 lg:items-start">
+        <div className="min-w-0 bg-white rounded-2xl border border-[#eadaaf] p-2 sm:p-3">
+          <p className="text-[10px] font-black text-[#8b6508] mb-2 px-1">רשימת השמלות</p>
+          <div className={LIST_SCROLL_CLASS}>
+            {filteredDresses.length === 0 ? (
+              <div className="p-4 text-center text-sm text-[#6e634c]">
+                אין שמלות שתואמות את החיפוש
+              </div>
+            ) : (
+              filteredDresses.map((dress) => {
+                const dressBookings = getDressBookings(dress.id, ownerBookings);
+                const summary = getDressRentalSummary(dressBookings);
+                const isSelected = selectedDressId === dress.id;
+                return (
+                  <button
+                    key={dress.id}
+                    ref={(el) => {
+                      rowRefs.current[dress.id] = el;
+                    }}
+                    type="button"
+                    onClick={() => handleSelectDress(dress.id)}
+                    aria-pressed={isSelected}
+                    className={`w-full text-right bg-white rounded-xl border p-3 flex gap-3 items-center transition-all cursor-pointer hover:shadow-md hover:border-[#d4af37] active:scale-[0.99] ${
+                      isSelected
+                        ? 'border-[#d4af37] ring-2 ring-[#d4af37]/30 bg-[#fffdf8] shadow-sm'
+                        : 'border-[#eadaaf] hover:bg-[#fffdf8]'
+                    }`}
+                  >
+                    {dress.images?.[0] ? (
+                      <DressImageFill
+                        src={dress.images[0]}
+                        alt=""
+                        className="w-12 h-14 shrink-0 rounded-lg border border-[#f0e2c3]"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-12 h-14 rounded-lg border border-dashed border-[#decfa8] bg-[#faf8f3] flex items-center justify-center text-lg shrink-0">
+                        👗
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm text-[#3d2f24] truncate">{dress.name}</p>
+                      <p className="text-[10px] text-[#6e634c] mt-0.5">
+                        ₪{dress.price} · {dress.size} · {dress.city}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                        <span className="text-[9px] bg-[#f4ebd4] px-1.5 py-0.5 rounded-full">
+                          {DRESS_STATUS[dress.status] || dress.status}
+                        </span>
+                        {dress.has_pending_update && (
+                          <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full font-bold">
+                            עדכון ממתין
+                          </span>
+                        )}
+                        <span className="text-[9px] font-bold text-[#8b6508]">{summary.badge}</span>
+                        {summary.detail && (
+                          <span className="text-[9px] text-[#9a7b4f]">{summary.detail}</span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold text-[#b8860b] shrink-0">פרטים ›</span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {selectedDress ? (
+          <div className="bg-white rounded-2xl border border-[#eadaaf] p-4 sm:p-5 space-y-4 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100dvh-2rem)] lg:overflow-y-auto mt-4 lg:mt-0">
+            <div className="flex items-start justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => onEditDress(selectedDress)}
+                className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-[#decfa8] text-[#8b6508] hover:bg-[#fffdf8] shrink-0"
+              >
+                ✏️ עדכון
+              </button>
+            </div>
+
+            <div className="flex gap-4">
+              {selectedDress.images?.[0] ? (
+                <DressImageFill
+                  src={selectedDress.images[0]}
+                  alt=""
+                  className="w-24 h-28 shrink-0 rounded-xl border border-[#f0e2c3]"
+                />
+              ) : (
+                <div className="w-24 h-28 rounded-xl border border-dashed border-[#decfa8] bg-[#faf8f3] flex items-center justify-center text-3xl shrink-0">
+                  👗
+                </div>
+              )}
+              <div className="min-w-0">
+                <h3 className="font-bold text-lg text-[#3d2f24]">{selectedDress.name}</h3>
+                <p className="text-xs text-[#6e634c] mt-1">
+                  ₪{selectedDress.price} · מידה {selectedDress.size} · {selectedDress.city}
+                </p>
+                {selectedDress.rental_count > 0 && (
+                  <p className="text-[10px] text-[#9a7b4f] mt-1">
+                    {selectedDress.rental_count} השכרות עד כה
+                  </p>
+                )}
+                {hasActiveFeaturedBoost(selectedDress) && (
+                  <p className="text-[10px] font-bold text-[#8b6508] mt-1.5 bg-[#fffdf8] border border-[#decfa8] rounded-lg px-2 py-1 inline-block">
+                    💛 חשיפה מוגברת בקטלוג
+                    {selectedDress.featured_until
+                      ? ` · עד ${formatFeaturedUntilDate(selectedDress.featured_until)}`
+                      : ''}
+                  </p>
+                )}
+                <span className="inline-block mt-2 text-[10px] bg-[#f4ebd4] px-2 py-0.5 rounded-full">
+                  {DRESS_STATUS[selectedDress.status] || selectedDress.status}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-black text-[#8b6508] mb-2">לוח שנה — תאריכים תפוסים</h4>
+              <DressCalendar
+                bookedDates={selectedConfirmedDates}
+                focusDate={calendarFocusDate}
+                compact
+              />
+            </div>
+
+            <div>
+              <h4 className="text-xs font-black text-[#8b6508] mb-2">
+                הזמנות קרובות ({selectedUpcomingBookings.length})
+              </h4>
+              {selectedUpcomingBookings.length === 0 ? (
+                <p className="text-xs text-[#9a7b4f] bg-[#faf8f3] rounded-xl border border-dashed border-[#decfa8] px-4 py-3 text-center">
+                  {selectedPastBookings.length > 0
+                    ? 'אין הזמנות קרובות — יש הזמנות בעבר למטה'
+                    : 'אין הזמנות — השמלה פנויה להשכרה'}
+                </p>
+              ) : (
+                <ul className="space-y-2 max-h-64 overflow-y-auto">
+                  {selectedUpcomingBookings.map((b) => (
+                    <li
+                      key={b.id}
+                      className="flex flex-wrap items-center justify-between gap-2 bg-gradient-to-l from-[#fffdf8] to-[#f4ebd4] border border-[#decfa8] rounded-xl px-3 py-2.5"
+                    >
+                      <div>
+                        <p className="text-sm font-bold text-[#3d2f24]">
+                          {b.customer_name || 'שוכרת'}
+                        </p>
+                        <p className="text-xs text-[#8b6508] font-bold mt-0.5">📅 {b.event_date}</p>
+                        {b.customer_phone && (
+                          <a
+                            href={`tel:${b.customer_phone}`}
+                            className="text-[11px] text-[#6e634c] mt-0.5 inline-block hover:underline"
+                          >
+                            📞 {b.customer_phone}
+                          </a>
+                        )}
+                      </div>
+                      <span
+                        className={`text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 ${
+                          b.status === 'confirmed'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}
+                      >
+                        {BOOKING_STATUS[b.status] || b.status}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {selectedPastBookings.length > 0 && (
+              <div className="bg-neutral-50 rounded-xl border border-neutral-200 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowSelectedPastBookings((v) => !v)}
+                  className="w-full flex items-center justify-between gap-2 px-3 py-2.5 text-[11px] font-black text-neutral-700 bg-neutral-100 hover:bg-neutral-200/80 transition-colors"
+                >
+                  <span>🗓️ הזמנות בעבר לשמלה זו ({selectedPastBookings.length})</span>
+                  <span>{showSelectedPastBookings ? '▲' : '▼'}</span>
+                </button>
+                {showSelectedPastBookings && (
+                  <ul className="space-y-2 max-h-40 overflow-y-auto p-2">
+                    {selectedPastBookings.map((b) => (
+                      <li
+                        key={b.id}
+                        className="flex flex-wrap items-center justify-between gap-2 bg-white border border-neutral-200 rounded-xl px-3 py-2.5"
+                      >
+                        <div>
+                          <p className="text-sm font-bold text-neutral-700">
+                            {b.customer_name || 'שוכרת'}
+                          </p>
+                          <p className="text-xs text-neutral-500 font-bold mt-0.5">📅 {b.event_date}</p>
+                        </div>
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full shrink-0 bg-neutral-200 text-neutral-700">
+                          {BOOKING_STATUS[b.status] || b.status}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="mt-4 lg:mt-0 bg-[#faf8f3] rounded-xl border border-dashed border-[#decfa8] p-4 text-center text-xs text-[#6e634c]">
+            {filteredDresses.length === 0
+              ? 'אין שמלות שתואמות את הסינון — נסי לשנות את החיפוש או המסננים'
+              : 'בחרי שמלה מהרשימה לצפייה בלוח שנה והזמנות'}
+          </div>
+        )}
+      </div>
+
+      {pendingApprovalBookings.length > 0 && (
+        <div className="bg-amber-50/70 rounded-2xl border border-amber-200 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowPendingApproval((v) => !v)}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-amber-900 bg-amber-50 hover:bg-amber-100/80 transition-colors"
+          >
+            <span>⏳ הזמנות שממתינות לאישור תשלום ({pendingApprovalBookings.length})</span>
+            <span>{showPendingApproval ? '▲' : '▼'}</span>
+          </button>
+          {showPendingApproval && (
+            <ul className="divide-y divide-amber-100 max-h-64 overflow-y-auto">
+              {pendingApprovalBookings.map((b) => (
+                <li key={b.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectDress(String(b.dress_id))}
+                    className="w-full text-right px-4 py-3 hover:bg-amber-50/80 transition-colors flex justify-between gap-3 items-center"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#3d2f24] truncate">{b.dress_name}</p>
+                      <p className="text-[10px] text-amber-900 mt-0.5">
+                        {formatHebrewDate(b.event_date)} · {b.customer_name || 'שוכרת'}
+                      </p>
+                    </div>
+                    <span className="text-[9px] shrink-0 bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold">
+                      {BOOKING_STATUS[b.status] || b.status}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {cancelledBookings.length > 0 && (
+        <div className="bg-red-50/60 rounded-2xl border border-red-200 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowCancelledBookings((v) => !v)}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-red-900 bg-red-50 hover:bg-red-100/80 transition-colors"
+          >
+            <span>✕ {BOOKINGS_CANCELLED_SECTION_TITLE} ({cancelledBookings.length})</span>
+            <span>{showCancelledBookings ? '▲' : '▼'}</span>
+          </button>
+          <p className="px-4 py-3 text-[11px] text-[#6e634c] leading-relaxed border-t border-red-100 bg-white/70">
+            {BOOKINGS_CANCELLED_RETENTION_NOTE}
+          </p>
+          {showCancelledBookings && (
+            <ul className="divide-y divide-red-100 max-h-72 overflow-y-auto">
+              {cancelledBookings.map((b) => (
+                <li key={b.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectDress(String(b.dress_id))}
+                    className="w-full text-right px-4 py-3 hover:bg-red-50/80 transition-colors"
+                  >
+                    <div className="flex justify-between gap-3 items-start">
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-[#3d2f24] truncate">{b.dress_name}</p>
+                        <p className="text-[10px] text-[#6e634c] mt-0.5">
+                          {formatHebrewDate(b.event_date)} · {b.customer_name || 'שוכרת'}
+                          {b.customer_phone ? ` · ${b.customer_phone}` : ''}
+                        </p>
+                        <p className="text-[10px] text-red-800/90 mt-1 leading-relaxed">
+                          {cancelledBookingDetail(b)}
+                        </p>
+                      </div>
+                      <span className="text-[9px] shrink-0 bg-red-100 text-red-900 px-2 py-0.5 rounded-full font-bold">
+                        בוטלה
+                      </span>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {pastOwnerBookings.length > 0 && (
+        <div className="bg-neutral-50 rounded-2xl border border-neutral-200 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowPastBookings((v) => !v)}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-neutral-700 bg-neutral-100 hover:bg-neutral-200/80 transition-colors"
+          >
+            <span>🗓️ {BOOKINGS_PAST_SECTION_TITLE} ({pastOwnerBookings.length})</span>
+            <span>{showPastBookings ? '▲' : '▼'}</span>
+          </button>
+          <p className="px-4 py-3 text-[11px] text-[#6e634c] leading-relaxed border-t border-neutral-200 bg-white/60">
+            {BOOKINGS_PAST_RETENTION_NOTE}
+          </p>
+          {showPastBookings && (
+            <ul className="divide-y divide-neutral-200 max-h-72 overflow-y-auto">
+              {pastOwnerBookings.map((b) => (
+                <li key={b.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectDress(String(b.dress_id))}
+                    className="w-full text-right px-4 py-3 hover:bg-neutral-100/80 transition-colors flex justify-between gap-3 items-center"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-neutral-700 truncate">{b.dress_name}</p>
+                      <p className="text-[10px] text-neutral-500 mt-0.5">
+                        {formatHebrewDate(b.event_date)} · {b.customer_name || 'שוכרת'}
+                      </p>
+                    </div>
+                    <span className="text-[9px] shrink-0 bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded-full font-bold">
+                      עבר
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {removedDresses.length > 0 && (
+        <div className="bg-neutral-50 rounded-2xl border border-neutral-200 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowRemovedDresses((v) => !v)}
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-neutral-700 bg-neutral-100 hover:bg-neutral-200/80 transition-colors"
+          >
+            <span>🗂️ שמלות שהוסרו מהאתר ({removedDresses.length})</span>
+            <span>{showRemovedDresses ? '▲' : '▼'}</span>
+          </button>
+          {showRemovedDresses && (
+            <ul className="divide-y divide-neutral-200 max-h-56 overflow-y-auto">
+              {removedDresses.map((dress) => (
+                <li key={dress.id} className="px-4 py-3 flex gap-3 items-center">
+                  {dress.images?.[0] ? (
+                    <DressImageFill
+                      src={dress.images[0]}
+                      alt=""
+                      className="w-10 h-12 shrink-0 rounded-lg border border-neutral-200 opacity-70"
+                      loading="lazy"
+                      fillMode="cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-12 rounded-lg border border-dashed border-neutral-300 bg-white flex items-center justify-center text-sm shrink-0 opacity-70">
+                      👗
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-neutral-700 truncate">{dress.name}</p>
+                    <p className="text-[10px] text-neutral-500 mt-0.5">
+                      ₪{dress.price} · {dress.size} · {dress.city}
+                    </p>
+                  </div>
+                  <span className="text-[9px] shrink-0 bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded-full">
+                    הוסרה
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

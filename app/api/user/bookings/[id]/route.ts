@@ -1,0 +1,75 @@
+import { NextResponse } from 'next/server';
+import { notifyBookingCancelledByRenter } from '@/lib/booking-cancel-notify';
+import { getUserFromRequest } from '@/lib/user-auth';
+import { userOwnsBooking } from '@/lib/booking-ownership';
+import { getSupabaseAdmin, isSupabaseConfigured } from '@/lib/supabase/server';
+
+const CANCELLABLE_STATUSES = new Set([
+  'pending_owner_approval',
+  'pending_payment',
+  'awaiting_admin_approval',
+  'confirmed',
+]);
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = getUserFromRequest(request);
+  if (!user) return NextResponse.json({ error: 'יש להתחבר' }, { status: 401 });
+  if (!isSupabaseConfigured()) return NextResponse.json({ error: 'Supabase לא מוגדר' }, { status: 503 });
+
+  try {
+    const { id } = await params;
+    const body = await request.json().catch(() => ({}));
+    const action = String(body.action || '').trim();
+
+    if (action !== 'cancel') {
+      return NextResponse.json({ error: 'פעולה לא נתמכת' }, { status: 400 });
+    }
+
+    const supabase = getSupabaseAdmin();
+    const { data: booking, error } = await supabase
+      .from('bookings')
+      .select(
+        'id, dress_id, status, site_user_id, customer_name, customer_email, customer_phone, event_date'
+      )
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!booking) return NextResponse.json({ error: 'הזמנה לא נמצאה' }, { status: 404 });
+    if (!userOwnsBooking(booking, user)) {
+      return NextResponse.json({ error: 'אין הרשאה לבטל הזמנה זו' }, { status: 403 });
+    }
+
+    if (!CANCELLABLE_STATUSES.has(booking.status)) {
+      return NextResponse.json({ error: 'לא ניתן לבטל הזמנה זו' }, { status: 400 });
+    }
+
+    const { error: updateError } = await supabase
+      .from('bookings')
+      .update({
+        status: 'cancelled',
+        owner_responded_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+
+    if (updateError) throw updateError;
+
+    const { warnings } = await notifyBookingCancelledByRenter(supabase, {
+      bookingId: booking.id,
+      dressId: booking.dress_id,
+      customerName: String(booking.customer_name || user.displayName || ''),
+      customerEmail: String(booking.customer_email || user.email || ''),
+      eventDate: String(booking.event_date || ''),
+      user,
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'ההזמנה בוטלה בהצלחה',
+      emailWarnings: warnings.length ? warnings : undefined,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'שגיאה';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
