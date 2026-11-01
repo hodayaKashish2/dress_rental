@@ -1,5 +1,4 @@
 import {
-  PRODUCTION_SITE_URL,
   SITE_NAME,
   SITE_SEO_DESCRIPTION,
   getServerAppUrl,
@@ -33,5 +32,6 @@ export function buildOrganizationJsonLd() {
   };
 }
 
-/** For reference in docs — production canonical host */
-export const SITE_CANONICAL_HOST = PRODUCTION_SITE_URL.replace(/^https?:\/\//, '');
+export function getSiteCanonicalHost() {
+  return getServerAppUrl().replace(/^https?:\/\//, '');
+}

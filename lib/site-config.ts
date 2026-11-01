@@ -49,7 +49,26 @@ export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP || '972534201133
 
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('היי, אשמח לפרטים על שמלה מהאתר')}`;
 
-export const PRODUCTION_SITE_URL = 'https://dress-click.co.il';
+function withScheme(value: string) {
+  const trimmed = value.trim().replace(/\/$/, '');
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+/** כתובת אתר הבדיקות. לא משתמשים בכתובת של האתר החי. */
+export function getServerAppUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configured) return withScheme(configured);
+
+  const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (productionHost) return withScheme(productionHost);
+
+  const vercelHost = process.env.VERCEL_URL?.trim();
+  if (vercelHost) return withScheme(vercelHost);
+
+  return 'http://localhost:3002';
+}
 
 /** נתיב סודי לפאנל הניהול — לא מופיע בתפריט */
 export const ADMIN_PANEL_PATH = 'hodaya0527640';
@@ -58,28 +77,9 @@ export function adminPanelUrl() {
   return `${getServerAppUrl()}/${ADMIN_PANEL_PATH}`;
 }
 
-/** כתובת ציבורית של האתר — בדפדפן משתמשים ב-origin הנוכחי */
-export function getServerAppUrl(): string {
-  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (configured) {
-    const normalized = configured.replace(/\/$/, '');
-    if (normalized.includes('localhost') || normalized.includes('127.0.0.1')) {
-      return normalized;
-    }
-    if (!normalized.includes('.vercel.app')) {
-      return normalized;
-    }
-  }
-
-  return PRODUCTION_SITE_URL;
-}
-
 export function getPublicAppUrl() {
   if (typeof window !== 'undefined' && window.location?.origin) {
-    const origin = window.location.origin.replace(/\/$/, '');
-    if (!origin.includes('.vercel.app')) {
-      return origin;
-    }
+    return window.location.origin.replace(/\/$/, '');
   }
   return getServerAppUrl();
 }

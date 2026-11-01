@@ -1,4 +1,4 @@
-import { ownerWhatsAppLink } from '@/lib/site-config';
+import { getServerAppUrl, ownerWhatsAppLink } from '@/lib/site-config';
 
 function toIntlDigits(phone: string) {
   const digits = phone.replace(/\D/g, '');
@@ -79,7 +79,7 @@ export async function sendWhatsAppText(phone: string, message: string): Promise<
 }
 
 export function dressApprovedWhatsAppMessage(ownerName: string, dressName: string) {
-  return `שלום ${ownerName}! 🎉\nהשמלה "${dressName}" אושרה ומופיעה עכשיו בקטלוג באתר שמלה בקליק.\nכנסי לצפות: ${process.env.NEXT_PUBLIC_APP_URL || 'https://luxe-couture.vercel.app'}`;
+  return `שלום ${ownerName}! 🎉\nהשמלה "${dressName}" אושרה ומופיעה עכשיו בקטלוג באתר שמלה בקליק.\nכנסי לצפות: ${getServerAppUrl()}`;
 }
 
 export { ownerWhatsAppLink };
