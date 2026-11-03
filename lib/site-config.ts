@@ -20,15 +20,19 @@ export const SITE_SEO_KEYWORDS = [
 
 export const SITE_HERO_TAGLINE = 'שמלות ערב צנועות — תיווך השכרה ומכירה';
 
-export const DEFAULT_ADMIN_EMAIL = 'dressbclick@gmail.com';
+export const DEFAULT_ADMIN_EMAIL = 'dressbclicktest@gmail.com';
 
 export const LEGACY_ADMIN_EMAIL = 'hodayaka1212@gmail.com';
+
+/** הכתובת של האתר החי. באתר הבדיקות היא לא בשימוש. */
+export const LIVE_SITE_ADMIN_EMAIL = 'dressbclick@gmail.com';
 
 export function resolveSiteEmail(email?: string | null) {
   const value = (email || DEFAULT_ADMIN_EMAIL).trim().toLowerCase();
   if (
     !value ||
     value === LEGACY_ADMIN_EMAIL ||
+    value === LIVE_SITE_ADMIN_EMAIL ||
     value.includes('hodayaka1212')
   ) {
     return DEFAULT_ADMIN_EMAIL;
@@ -36,7 +40,7 @@ export function resolveSiteEmail(email?: string | null) {
   return value;
 }
 
-/** כתובת המייל הראשית של האתר — תמיד dressbclick אלא אם הוגדר מייל חדש במפורש */
+/** כתובת המייל הראשית של אתר הבדיקות */
 export function getSiteAdminEmail() {
   return resolveSiteEmail(process.env.ADMIN_EMAIL);
 }

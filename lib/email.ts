@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
-import { DEFAULT_ADMIN_EMAIL, getSiteAdminEmail, getServerAppUrl, accountAddDressUrl, accountReservationsUrl, accountRentalsUrl, completeBookingUrl, adminPanelUrl, dressPageUrl } from '@/lib/site-config';
+import { DEFAULT_ADMIN_EMAIL, LIVE_SITE_ADMIN_EMAIL, getSiteAdminEmail, getServerAppUrl, accountAddDressUrl, accountReservationsUrl, accountRentalsUrl, completeBookingUrl, adminPanelUrl, dressPageUrl } from '@/lib/site-config';
 import { PAYMENT_DEADLINE_DAYS } from '@/lib/booking-payment-deadlines';
 import { buildDressUpdateDiffHtml } from '@/lib/dress-update-diff-html';
 
@@ -35,8 +35,11 @@ function getSmtpAuthUser() {
     .trim()
     .toLowerCase();
 
-  // סיסמת אפליקציה קשורה לחשבון Gmail הספציפי — לא ממפים legacy כאן.
-  return raw || DEFAULT_ADMIN_EMAIL;
+  if (!raw || raw === LIVE_SITE_ADMIN_EMAIL || raw.includes('hodayaka1212')) {
+    return DEFAULT_ADMIN_EMAIL;
+  }
+
+  return raw;
 }
 
 function getSmtpCredentials() {
