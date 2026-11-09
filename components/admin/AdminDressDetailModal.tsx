@@ -32,18 +32,18 @@ export default function AdminDressDetailModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-2xl border-2 border-[#111111] bg-[#fffafb] shadow-2xl"
+        className="w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-2xl border-2 border-[#d4af37] bg-[#fffdf8] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#e6e2d8] bg-[#fffafb] px-4 py-3">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#eadaaf] bg-[#fffdf8] px-4 py-3">
           <div className="min-w-0">
-            <p className="font-black text-lg text-[#161513] truncate">{dress.name}</p>
-            <p className="text-xs text-[#111111] font-bold">{subtitle ?? defaultSubtitle}</p>
+            <p className="font-black text-lg text-[#3d2f24] truncate">{dress.name}</p>
+            <p className="text-xs text-[#8b6508] font-bold">{subtitle ?? defaultSubtitle}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-9 h-9 shrink-0 rounded-full border border-[#e6e2d8] bg-white font-bold text-[#161513] hover:bg-[#eeece7]"
+            className="w-9 h-9 shrink-0 rounded-full border border-[#eadaaf] bg-white font-bold text-[#3d2f24] hover:bg-[#f4ebd4]"
             aria-label="סגירה"
           >
             ✕

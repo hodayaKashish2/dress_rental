@@ -16,8 +16,8 @@ function HighlightSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="bg-gradient-to-l from-[#fffafb] to-[#eeece7] border border-[#cfc8bc] rounded-xl p-5">
-      <h2 className="mb-2 text-lg font-bold text-[#161513]">{title}</h2>
+    <section className="bg-gradient-to-l from-[#fffdf9] to-[#f4ebd4] border border-[#e6c687] rounded-xl p-5">
+      <h2 className="font-[family-name:var(--font-luxury)] text-lg text-[#3d2f24] mb-2">{title}</h2>
       {children}
     </section>
   );
@@ -27,7 +27,7 @@ export default function TermsPage() {
   return (
     <ContentPage title="תקנון האתר" subtitle={`תנאי שימוש ב-${SITE_NAME} — נא לקרוא בעיון לפני השימוש`}>
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">1. הסכמה לתנאים</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">1. הסכמה לתנאים</h2>
         <p className="text-xs leading-relaxed">
           גלישה, הרשמה, פרסום שמלה, הזמנה או כל שימוש אחר באתר מהווים הסכמה מלאה, מפורשת ובלתי
           חוזרת לתקנון זה. מי שאינה מסכימה — אינה רשאית להשתמש באתר. התקנון מהווה הסכם מחייב בינך
@@ -59,6 +59,7 @@ export default function TermsPage() {
           <li>מחלוקת, הונאה, אי-קיום התחייבות או הפרת זכויות בין משכירה לשוכרת</li>
           <li>פגיעה בגוף, ברכוש או בנפש הנובעת מהשכרה, מסירה או שימוש בשמלה</li>
           <li>תוכן שפורסם על ידי משתמשות (טקסט, תמונות, מחירים, פרטי קשר)</li>
+          <li>תמונה של דוגמנית, צילום קטלוג או תמונה של מעצבת שהעלתה משכירה</li>
           <li>תקלות טכניות, השבתות, אובדן מידע או שיבושים באתר</li>
           <li>פעולה או מחדל של ספקי צד שלישי (לרבות אחסון ענן, דוא״ל)</li>
         </ul>
@@ -83,45 +84,53 @@ export default function TermsPage() {
       </HighlightSection>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">5. אחריות המשתמשת ותוכן שפורסם</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">5. אחריות המשתמשת ותוכן שפורסם</h2>
         <p className="text-xs leading-relaxed mb-2">
           כל משתמשת אחראית באופן בלעדי לתוכן שהיא מפרסמת ולמידע שהיא מוסרת. המשכירה מצהירה כי:
         </p>
         <ul className="text-xs space-y-1.5 list-disc pr-5">
           <li>השמלה בבעלותה או שהיא רשאית להשכירה</li>
           <li>התמונות, המחירים, המידות והתיאורים נכונים ואמיתיים</li>
+          <li>התמונות שהעלתה הן תמונות אישיות שלה עם השמלה, ולא תמונה של דוגמנית, צילום מקטלוג או מאתר של מעצבת</li>
+          <li>יש לה זכות לפרסם כל תמונה שהעלתה, לרבות זכות היוצרים וזכות הדמות של המצולמת</li>
           <li>פרטי הקשר שמסרה מעודכנים</li>
           <li>היא תעמוד בהתחייבויותיה כלפי השוכרת</li>
         </ul>
+        <p className="text-xs leading-relaxed mt-2">
+          האחריות על כל תמונה שמתפרסמת באתר היא של המשכירה בלבד. מפעילת האתר אינה בודקת אם
+          התמונה צולמה על ידי המשכירה, אם מופיעה בה דוגמנית, או אם היא שייכת למעצבת, לצלם או
+          לאדם אחר. כל טענה, דרישה או תביעה בנוגע לתמונה — לרבות זכות יוצרים או זכות הדמות —
+          מופנית אל המשכירה שהעלתה אותה, ולמפעילת האתר אין אחריות בגינה.
+        </p>
         <p className="text-xs leading-relaxed mt-2">
           מפעילת האתר רשאית — אך לא חייבת — לבדוק, לאשר, לערוך או להסיר תוכן לפי שיקול דעתה
           הבלעדי, ללא הודעה מוקדמת וללא צורך בנימוק.
         </p>
       </section>
 
-      <section className="bg-gradient-to-l from-[#fffafb] to-[#eeece7] border border-[#cfc8bc] rounded-xl p-5">
-        <h2 className="mb-2 text-lg font-bold text-[#161513]">
+      <section className="bg-gradient-to-l from-[#fffdf9] to-[#f4ebd4] border border-[#e6c687] rounded-xl p-5">
+        <h2 className="font-[family-name:var(--font-luxury)] text-lg text-[#3d2f24] mb-2">
           6. עמלת פלטפורמה ({COMMISSION_PERCENT}%)
         </h2>
         <p className="text-xs leading-relaxed mb-3">{OWNER_COMMISSION_EXPLAINER.body}</p>
         <ul className="text-xs space-y-2 list-none">
           <li className="flex gap-2">
-            <span className="text-[#111111]">✓</span>
+            <span className="text-[#d4af37]">✓</span>
             <span>השוכרת משלמת את מחיר השמלה המלא — ללא תוספת עמלה מצדה.</span>
           </li>
           <li className="flex gap-2">
-            <span className="text-[#111111]">✓</span>
+            <span className="text-[#d4af37]">✓</span>
             <span>העמלה נגבית מהמשכירה בלבד, ומכסה תפעול, אבטחה, פרסום וליווי.</span>
           </li>
           <li className="flex gap-2">
-            <span className="text-[#111111]">✓</span>
+            <span className="text-[#d4af37]">✓</span>
             <span>{OWNER_COMMISSION_EXPLAINER.exposure}</span>
           </li>
         </ul>
       </section>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">7. עבודה דרך האתר בלבד</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">7. עבודה דרך האתר בלבד</h2>
         <p className="text-xs leading-relaxed">{OWNER_COMMISSION_EXPLAINER.theft}</p>
         <p className="text-xs leading-relaxed mt-2">
           משכירה שמפרסמת באתר מתחייבת שלא לתאם, לקבל תשלום או להשכיר מחוץ לפלטפורמה. הפרה עלולה
@@ -130,7 +139,7 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">8. תשלום וסליקה</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">8. תשלום וסליקה</h2>
         <p className="text-xs leading-relaxed">
           התשלום מתבצע דרך האתר בשתי דרכים לבחירה: ביט או העברה בנקאית.
           מפעילת האתר אינה בנק, אינה מוסד פיננסי ואינה אחראית לתקלות סליקה, חיובים כפולים, ביטולי
@@ -140,7 +149,7 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">9. ביטולים והחזרים</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">9. ביטולים והחזרים</h2>
         <p className="text-xs leading-relaxed">
           ביטול, דחייה או החזר כספי בין משכירה לשוכרת — באחריותן המשותפת והישירה. מפעילת האתר
           אינה צד להסדרי ביטול, אינה מתחייבת להחזר כספים, ואינה מחויבת ליישם ביניהן הסכמות. ביטול
@@ -149,7 +158,7 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">10. חשיפה בקטלוג וסינון</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">10. חשיפה בקטלוג וסינון</h2>
         <p className="text-xs leading-relaxed">
           סדר הצגת שמלות, דירוג, חשיפה ותוצאות סינון נקבעים לפי שיקול דעת מפעילת האתר ואינם
           מהווים התחייבות לחשיפה, להזמנות או להכנסה. בקטלוג ניתן לסנן לפי מידה, עיר, צבע, סוג
@@ -158,7 +167,7 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">11. קטינות ושימוש אסור</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">11. קטינות ושימוש אסור</h2>
         <p className="text-xs leading-relaxed">
           השימוש מיועד לבנות מגיל 18 ומעלה. אסור להשתמש באתר לפעילות בלתי חוקית, הטעיה, הטרדה,
           פרסום תוכן פוגעני או מפר זכויות, או ניסיון לעקוף את מנגנוני התשלום והעמלה.
@@ -166,7 +175,26 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">12. שינויים, הפסקת שירות וסמכות שיפוט</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">12. הודעות דוא״ל, עדכונים ודברי פרסומת</h2>
+        <p className="text-xs leading-relaxed mb-2">
+          הרשמה לאתר וסימון האישור לתקנון זה מהווים הסכמה מפורשת לקבל מ-{SITE_NAME} הודעות
+          דוא״ל לכתובת שנמסרה בחשבון. ההודעות יכולות לכלול:
+        </p>
+        <ul className="text-xs space-y-1.5 list-disc pr-5 mb-2">
+          <li>הודעות תפעוליות על חשבון, שמלה, הזמנה או תשלום</li>
+          <li>עדכונים על האתר, שמלות חדשות בקטלוג וחדשות מהקהילה</li>
+          <li>דברי פרסומת, מבצעים ותוכן שיווקי של האתר ושל מפרסמים מטעמו</li>
+        </ul>
+        <p className="text-xs leading-relaxed">
+          ההסכמה ניתנת לפי חוק התקשורת (בזק ושידורים), התשמ״ב–1982, לרבות תיקון 40.
+          בכל הודעת פרסומת יצוינו פרטי השולח ודרך להסרה. אפשר לבקש להפסיק דברי פרסומת בכל עת
+          באזור האישי או בפנייה אל {CONTACT_EMAIL}. הפסקת דברי הפרסומת אינה מבטלת הודעות
+          תפעוליות הנדרשות לניהול החשבון וההזמנות.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="font-bold text-[#3d2f24] mb-2">13. שינויים, הפסקת שירות וסמכות שיפוט</h2>
         <p className="text-xs leading-relaxed mb-2">
           מפעילת האתר רשאית לעדכן תקנון זה, להשעות או לסגור את האתר, ולחסום משתמשות — בכל עת וללא
           הודעה מוקדמת. עדכון יפורסם באתר ויחייב ממועד פרסומו.
@@ -178,7 +206,7 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="font-bold text-[#161513] mb-2">13. יצירת קשר</h2>
+        <h2 className="font-bold text-[#3d2f24] mb-2">14. יצירת קשר</h2>
         <p className="text-xs leading-relaxed">
           לשאלות בנוגע לתקנון: {CONTACT_EMAIL}. פניות בנושאי מחלוקת בין משכירה לשוכרת — יש לפנות
           ישירות בין הצדדים; מפעילת האתר אינה מחויבת להיות מגשרת או בוררת.

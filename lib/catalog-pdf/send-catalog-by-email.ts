@@ -8,7 +8,6 @@ import type { CatalogPdfDress } from '@/lib/catalog-pdf/types';
 /**
  * 90 שמלות כבר נשלחו בהצלחה כקובץ אחד.
  * 120 כקובץ אחד נכשל. לכן כל PDF מכיל עד 90 שמלות.
- * לא מפצלים לפי 15MB — זה יצר קבצים של 45 שמלות בטעות.
  */
 const DRESSES_PER_PDF = 90;
 
@@ -40,13 +39,13 @@ function buildCatalogEmailHtml(params: {
     .join('');
 
   return `
-    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #e6e2d8;border-radius:16px;background:#ffffff;">
-      <h2 style="color:#161513;margin-top:0;">קטלוג ${SITE_NAME}</h2>
+    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #eadaaf;border-radius:16px;background:#fffdf8;">
+      <h2 style="color:#3d2f24;margin-top:0;">קטלוג ${SITE_NAME}</h2>
       ${
         isMulti
-          ? `<p style="line-height:1.7;color:#3a3834;">מצורפים <strong>${partCount} קבצי PDF</strong> עם ${totalDresses} שמלות מהקטלוג.</p>
-             <ul style="line-height:1.7;color:#3a3834;padding-right:18px;">${partsList}</ul>`
-          : `<p style="line-height:1.7;color:#3a3834;">מצורף קובץ PDF עם ${totalDresses} שמלות מהקטלוג.</p>`
+          ? `<p style="line-height:1.7;color:#554a33;">מצורפים <strong>${partCount} קבצי PDF</strong> עם ${totalDresses} שמלות מהקטלוג.</p>
+             <ul style="line-height:1.7;color:#554a33;padding-right:18px;">${partsList}</ul>`
+          : `<p style="line-height:1.7;color:#554a33;">מצורף קובץ PDF עם ${totalDresses} שמלות מהקטלוג.</p>`
       }
     </div>
   `;
@@ -108,20 +107,39 @@ export async function sendCatalogPdfByEmail(to: string) {
     })),
   });
 
-  const attachmentResult = await sendEmailWithAttachmentTo(to, subject, html, attachments);
+  const totalBytes = attachments.reduce((sum, file) => sum + file.content.length, 0);
+  const combinedEmailTooLarge = partCount > 1 && totalBytes > 20 * 1024 * 1024;
 
-  if (attachmentResult.success) {
-    return {
-      success: true as const,
-      linkOnly: false as const,
-      message:
-        partCount === 1
-          ? `הקטלוג נשלח ל-${to} כ-PDF.`
-          : `הקטלוג נשלח ל-${to} במייל אחד עם ${partCount} קבצי PDF.`,
-    };
+  function shouldSendPartsSeparately(message: string | undefined) {
+    const lower = (message || '').toLowerCase();
+    return (
+      isEmailSizeError(message) ||
+      lower.includes('timed out') ||
+      lower.includes('timeout') ||
+      lower.includes('etimedout')
+    );
   }
 
-  if (partCount > 1 && isEmailSizeError(attachmentResult.error)) {
+  if (!combinedEmailTooLarge) {
+    const attachmentResult = await sendEmailWithAttachmentTo(to, subject, html, attachments);
+
+    if (attachmentResult.success) {
+      return {
+        success: true as const,
+        linkOnly: false as const,
+        message:
+          partCount === 1
+            ? `הקטלוג נשלח ל-${to} כ-PDF.`
+            : `הקטלוג נשלח ל-${to} במייל אחד עם ${partCount} קבצי PDF.`,
+      };
+    }
+
+    if (!(partCount > 1 && shouldSendPartsSeparately(attachmentResult.error))) {
+      return attachmentResult;
+    }
+  }
+
+  {
     let sent = 0;
     for (let i = 0; i < numberedParts.length; i++) {
       const part = numberedParts[i];
@@ -163,6 +181,4 @@ export async function sendCatalogPdfByEmail(to: string) {
       message: `הקטלוג נשלח ל-${to} ב-${partCount} מיילים, כי קובץ אחד משולב היה גדול מדי.`,
     };
   }
-
-  return attachmentResult;
 }

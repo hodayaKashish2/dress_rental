@@ -83,7 +83,7 @@ export default function CatalogEmailModal({ open, onClose, onError }: CatalogEma
       onClick={onBackdropClick}
     >
       <div
-        className="relative w-full max-w-sm rounded-2xl border-2 border-[#111111] bg-white p-6 shadow-2xl"
+        className="relative w-full max-w-sm rounded-2xl border-2 border-[#d4af37] bg-white p-6 shadow-2xl"
         dir="rtl"
         onMouseDown={onPanelMouseDown}
         onClick={(event) => event.stopPropagation()}
@@ -95,7 +95,7 @@ export default function CatalogEmailModal({ open, onClose, onError }: CatalogEma
           <button
             type="button"
             onClick={handleClose}
-            className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border bg-neutral-100 font-bold text-[#111111] hover:bg-[#111111]"
+            className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border bg-neutral-100 font-bold text-[#b8860b] hover:bg-[#d4af37]"
             aria-label="סגירה"
           >
             ✕
@@ -111,7 +111,7 @@ export default function CatalogEmailModal({ open, onClose, onError }: CatalogEma
               <h3 id="catalog-email-title" className="text-base font-black text-neutral-900">
                 שליחת הקטלוג במייל
               </h3>
-              <p className="text-xs leading-relaxed text-[#6f6c66]">
+              <p className="text-xs leading-relaxed text-[#6e634c]">
                 הזיני כתובת אימייל — נשלח אלייך את הקטלוג. אם הוא גדול, יישלחו כמה קבצי PDF באותו מייל.
               </p>
             </div>
@@ -123,11 +123,11 @@ export default function CatalogEmailModal({ open, onClose, onError }: CatalogEma
               onChange={(event) => setEmail(event.target.value)}
               placeholder="name@gmail.com"
               dir="ltr"
-              className="w-full rounded-xl border border-[#ddd8ce] bg-white px-3 py-2.5 text-sm text-[#161513] placeholder:text-[#6f6c66] focus:border-[#111111] focus:outline-none"
+              className="w-full rounded-xl border border-[#decfa8] bg-white px-3 py-2.5 text-sm text-[#2c261a] placeholder:text-[#9a7b4f] focus:border-[#d4af37] focus:outline-none"
             />
             <button
               type="submit"
-              className="w-full rounded-xl bg-gradient-to-r from-[#111111] to-[#2a2a2a] py-3 text-xs font-black text-white shadow-md hover:from-[#2a2a2a] hover:to-[#111111]"
+              className="w-full rounded-xl bg-gradient-to-r from-[#d4af37] to-[#b8860b] py-3 text-xs font-black text-white shadow-md hover:from-[#b8860b] hover:to-[#8b6508]"
             >
               שלחי
             </button>
@@ -136,9 +136,9 @@ export default function CatalogEmailModal({ open, onClose, onError }: CatalogEma
 
         {step === 'loading' && (
           <div className="space-y-3 py-4 text-center">
-            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-[#ddd8ce] border-t-[#111111]" />
-            <p className="text-sm font-bold text-[#161513]">מכינים את הקבצים ושולחים למייל...</p>
-            <p className="text-xs text-[#6f6c66]">זה עלול לקחת כדקה — אל תסגרי את החלון</p>
+            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-[#decfa8] border-t-[#b8860b]" />
+            <p className="text-sm font-bold text-[#3d2f24]">מכינים את הקבצים ושולחים למייל...</p>
+            <p className="text-xs text-[#6e634c]">זה עלול לקחת כדקה — אל תסגרי את החלון</p>
           </div>
         )}
 
@@ -149,14 +149,14 @@ export default function CatalogEmailModal({ open, onClose, onError }: CatalogEma
             </span>
             <p className="text-sm font-bold leading-relaxed text-emerald-800">
               הקטלוג נשלח למייל
-              <span className="block text-xs font-semibold text-[#6f6c66] mt-1">
+              <span className="block text-xs font-semibold text-[#6e634c] mt-1">
                 אם הקטלוג גדול ייתכן כמה קבצי PDF באותו מייל. בדקי גם בספאם.
               </span>
             </p>
             <button
               type="button"
               onClick={handleClose}
-              className="text-xs font-bold text-[#111111] underline underline-offset-2"
+              className="text-xs font-bold text-[#b8860b] underline underline-offset-2"
             >
               סגור
             </button>
@@ -173,14 +173,14 @@ export default function CatalogEmailModal({ open, onClose, onError }: CatalogEma
                   setStep('form');
                   setError('');
                 }}
-                className="flex-1 rounded-xl border border-[#ddd8ce] py-2.5 text-xs font-bold text-[#111111]"
+                className="flex-1 rounded-xl border border-[#decfa8] py-2.5 text-xs font-bold text-[#8b6508]"
               >
                 נסי שוב
               </button>
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex-1 rounded-xl bg-[#161513] py-2.5 text-xs font-bold text-white"
+                className="flex-1 rounded-xl bg-[#2c261a] py-2.5 text-xs font-bold text-white"
               >
                 סגור
               </button>

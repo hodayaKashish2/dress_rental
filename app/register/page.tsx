@@ -57,22 +57,22 @@ function RegisterForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f7f6f3] via-[#eeece7] to-[#e6e2d8] flex items-center justify-center p-4" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-b from-[#fbf8f0] via-[#f3ebd6] to-[#e8dcbd] flex items-center justify-center p-4" dir="rtl">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-[#161513]">הרשמה ל-{SITE_NAME}</h1>
-          <p className="text-xs text-[#6f6c66] mt-2">הטלפון יקשר את השמלות וההזמנות שלך</p>
+          <h1 className="font-[family-name:var(--font-luxury)] text-2xl text-[#3d2f24]">הרשמה ל-{SITE_NAME}</h1>
+          <p className="text-xs text-[#6e634c] mt-2">הטלפון יקשר את השמלות וההזמנות שלך</p>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="bg-white/95 rounded-2xl border-2 border-[#cfc8bc] shadow-xl p-6 space-y-3">
+        <form onSubmit={handleSubmit} noValidate className="bg-white/95 rounded-2xl border-2 border-[#e6c687] shadow-xl p-6 space-y-3">
           <div>
-            <input placeholder="שם משתמש *" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="w-full p-2.5 border-2 border-[#ddd8ce] rounded-xl text-sm text-[#161513] placeholder:text-[#6f6c66] bg-white focus:border-[#111111] focus:outline-none" dir="ltr" />
-            <p className="text-[10px] text-[#6f6c66] mt-1">שם משתמש ייחודי — אם תפוס תופיע הודעה</p>
+            <input placeholder="שם משתמש *" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="w-full p-2.5 border-2 border-[#decfa8] rounded-xl text-sm text-[#2c261a] placeholder:text-[#9a7b4f] bg-white focus:border-[#d4af37] focus:outline-none" dir="ltr" />
+            <p className="text-[10px] text-[#9a7b4f] mt-1">שם משתמש ייחודי — אם תפוס תופיע הודעה</p>
           </div>
-          <input type="password" placeholder="סיסמה (6+ תווים) *" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full p-2.5 border-2 border-[#ddd8ce] rounded-xl text-sm text-[#161513] placeholder:text-[#6f6c66] bg-white focus:border-[#111111] focus:outline-none" dir="ltr" />
-          <input placeholder="שם מלא *" value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} className="w-full p-2.5 border-2 border-[#ddd8ce] rounded-xl text-sm text-[#161513] placeholder:text-[#6f6c66] bg-white focus:border-[#111111] focus:outline-none" />
-          <input type="tel" placeholder="טלפון (0501234567) *" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full p-2.5 border-2 border-[#ddd8ce] rounded-xl text-sm text-[#161513] placeholder:text-[#6f6c66] bg-white focus:border-[#111111] focus:outline-none" dir="ltr" />
-          <input type="text" inputMode="email" autoComplete="email" placeholder="אימייל (חובה)" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full p-2.5 border-2 border-[#ddd8ce] rounded-xl text-sm text-[#161513] placeholder:text-[#6f6c66] bg-white focus:border-[#111111] focus:outline-none" dir="ltr" required />
+          <input type="password" placeholder="סיסמה (6+ תווים) *" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full p-2.5 border-2 border-[#decfa8] rounded-xl text-sm text-[#2c261a] placeholder:text-[#9a7b4f] bg-white focus:border-[#d4af37] focus:outline-none" dir="ltr" />
+          <input placeholder="שם מלא *" value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} className="w-full p-2.5 border-2 border-[#decfa8] rounded-xl text-sm text-[#2c261a] placeholder:text-[#9a7b4f] bg-white focus:border-[#d4af37] focus:outline-none" />
+          <input type="tel" placeholder="טלפון (0501234567) *" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full p-2.5 border-2 border-[#decfa8] rounded-xl text-sm text-[#2c261a] placeholder:text-[#9a7b4f] bg-white focus:border-[#d4af37] focus:outline-none" dir="ltr" />
+          <input type="text" inputMode="email" autoComplete="email" placeholder="אימייל (חובה)" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full p-2.5 border-2 border-[#decfa8] rounded-xl text-sm text-[#2c261a] placeholder:text-[#9a7b4f] bg-white focus:border-[#d4af37] focus:outline-none" dir="ltr" required />
 
           <MarketingEmailOptInCheckbox
             checked={form.marketing_emails_opt_in}
@@ -83,11 +83,11 @@ function RegisterForm() {
 
           {error && <FormError message={error} />}
 
-          <button type="submit" disabled={loading} className="w-full py-3 bg-[#161513] text-white rounded-xl font-bold text-sm">
+          <button type="submit" disabled={loading} className="w-full py-3 bg-[#2c261a] text-white rounded-xl font-bold text-sm">
             {loading ? 'נרשמת...' : 'יצירת חשבון'}
           </button>
           <p className="text-center text-xs">
-            <Link href={`/login?next=${encodeURIComponent(next)}`} className="text-[#111111] underline">יש לי חשבון — התחברות</Link>
+            <Link href={`/login?next=${encodeURIComponent(next)}`} className="text-[#b8860b] underline">יש לי חשבון — התחברות</Link>
           </p>
         </form>
       </div>
@@ -97,7 +97,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-[#111111]">טוען...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-[#8b6508]">טוען...</div>}>
       <RegisterForm />
     </Suspense>
   );

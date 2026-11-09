@@ -14,10 +14,10 @@ function renderPage(title: string, message: string, success: boolean) {
         <title>${title}</title>
       </head>
       <body style="font-family: sans-serif; background: ${bg}; color: ${color}; min-height: 100vh; display: grid; place-items: center; padding: 24px;">
-        <div style="max-width: 480px; background: white; border: 1px solid #e6e2d8; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.08);">
-          <h1 style="margin-top: 0; color: #161513;">${title}</h1>
-          <p style="line-height: 1.7; color: #3a3834;">${message}</p>
-          <a href="/" style="display:inline-block; margin-top: 16px; color: #111111; font-weight: bold;">← חזרה לאתר</a>
+        <div style="max-width: 480px; background: white; border: 1px solid #eadaaf; border-radius: 16px; padding: 32px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.08);">
+          <h1 style="margin-top: 0; color: #3d2f24;">${title}</h1>
+          <p style="line-height: 1.7; color: #554a33;">${message}</p>
+          <a href="/" style="display:inline-block; margin-top: 16px; color: #b8860b; font-weight: bold;">← חזרה לאתר</a>
         </div>
       </body>
     </html>

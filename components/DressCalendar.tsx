@@ -125,19 +125,19 @@ export default function DressCalendar({ bookedDates = [], compact = false, focus
         <button
           type="button"
           onClick={() => goMonth(-1)}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#ddd8ce] bg-white text-[#111111] text-[10px] font-bold hover:border-[#111111] hover:bg-[#fffafb] transition-colors"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#decfa8] bg-white text-[#8b6508] text-[10px] font-bold hover:border-[#d4af37] hover:bg-[#fffdf8] transition-colors"
           aria-label="חודש קודם"
         >
           ‹ חודש קודם
         </button>
 
         <div className="text-center flex-1 min-w-[8rem]">
-          <p className="text-xs sm:text-sm font-black text-[#161513] capitalize">{monthLabel}</p>
+          <p className="text-xs sm:text-sm font-black text-[#3d2f24] capitalize">{monthLabel}</p>
           {!isCurrentMonth && (
             <button
               type="button"
               onClick={goToday}
-              className="text-[9px] text-[#111111] font-bold hover:underline mt-0.5"
+              className="text-[9px] text-[#b8860b] font-bold hover:underline mt-0.5"
             >
               חזרה לחודש הנוכחי
             </button>
@@ -147,7 +147,7 @@ export default function DressCalendar({ bookedDates = [], compact = false, focus
         <button
           type="button"
           onClick={() => goMonth(1)}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#ddd8ce] bg-white text-[#111111] text-[10px] font-bold hover:border-[#111111] hover:bg-[#fffafb] transition-colors"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#decfa8] bg-white text-[#8b6508] text-[10px] font-bold hover:border-[#d4af37] hover:bg-[#fffdf8] transition-colors"
           aria-label="חודש הבא"
         >
           חודש הבא ›
@@ -156,7 +156,7 @@ export default function DressCalendar({ bookedDates = [], compact = false, focus
 
       <div className={`grid grid-cols-7 gap-1 ${compact ? 'text-[8px]' : 'text-[9px]'}`}>
         {WEEKDAYS.map((name) => (
-          <div key={name} className="text-center font-black text-[#6f6c66] py-1">
+          <div key={name} className="text-center font-black text-[#9a7b4f] py-1">
             {name}
           </div>
         ))}
@@ -170,14 +170,14 @@ export default function DressCalendar({ bookedDates = [], compact = false, focus
               cell.outside
                 ? cell.booked
                   ? 'bg-red-50/50 border-red-100 text-red-400/80 opacity-70'
-                  : 'bg-[#f7f6f3] border-[#e6e2d8] text-[#b5a88a] opacity-80'
+                  : 'bg-[#faf8f3] border-[#efe6cf] text-[#b5a88a] opacity-80'
                 : cell.booked
                   ? 'bg-red-50 border-red-200 text-red-800'
-                  : 'bg-white border-[#e6e2d8] text-[#6f6c66]'
-            } ${cell.isToday ? 'ring-2 ring-[#111111] ring-offset-1' : ''}`}
+                  : 'bg-white border-[#eadaaf] text-[#6e634c]'
+            } ${cell.isToday ? 'ring-2 ring-[#d4af37] ring-offset-1' : ''}`}
             title={cell.date}
           >
-            <span className={`font-bold leading-none ${cell.outside ? 'text-[#b5a88a]' : 'text-[#111111]'}`}>
+            <span className={`font-bold leading-none ${cell.outside ? 'text-[#b5a88a]' : 'text-[#8b6508]'}`}>
               {cell.day}
             </span>
             <span className="mt-0.5 leading-none">{cell.booked ? '🔒' : cell.outside ? '·' : '✓'}</span>
@@ -185,11 +185,11 @@ export default function DressCalendar({ bookedDates = [], compact = false, focus
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-3 text-[9px] text-[#6f6c66] justify-center">
+      <div className="flex flex-wrap gap-3 text-[9px] text-[#9a7b4f] justify-center">
         <span>✓ פנוי</span>
         <span>🔒 שרוי</span>
         <span className="inline-flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full ring-2 ring-[#111111]" /> היום
+          <span className="w-2 h-2 rounded-full ring-2 ring-[#d4af37]" /> היום
         </span>
       </div>
     </div>

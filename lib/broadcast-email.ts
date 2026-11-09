@@ -24,7 +24,7 @@ function escapeHtml(value: string) {
 function plainTextToHtml(text: string) {
   return escapeHtml(text.trim())
     .split(/\n/)
-    .map((line) => (line ? `<p style="line-height:1.75;color:#3a3834;margin:0 0 12px;">${line}</p>` : '<p style="margin:0 0 8px;">&nbsp;</p>'))
+    .map((line) => (line ? `<p style="line-height:1.75;color:#554a33;margin:0 0 12px;">${line}</p>` : '<p style="margin:0 0 8px;">&nbsp;</p>'))
     .join('');
 }
 
@@ -120,23 +120,23 @@ export function buildBroadcastEmailHtml(params: {
   displayName?: string;
 }) {
   const greeting = params.displayName
-    ? `<p style="line-height:1.7;color:#3a3834;margin:0 0 16px;">שלום ${escapeHtml(params.displayName)}!</p>`
+    ? `<p style="line-height:1.7;color:#554a33;margin:0 0 16px;">שלום ${escapeHtml(params.displayName)}!</p>`
     : '';
 
   const footer =
     params.audience === 'opt_in'
-      ? `<p style="font-size:12px;color:#6f6c66;line-height:1.6;margin:24px 0 0;padding-top:16px;border-top:1px solid #ede3c8;">
+      ? `<p style="font-size:12px;color:#9a7b4f;line-height:1.6;margin:24px 0 0;padding-top:16px;border-top:1px solid #ede3c8;">
           ${escapeHtml(MARKETING_EMAIL_BROADCAST_FOOTER)}
-          <a href="${getAppUrl()}/account?section=profile" style="color:#111111;"> לביטול — אזור אישי → פרטי חשבון</a>
+          <a href="${getAppUrl()}/account?section=profile" style="color:#8b6508;"> לביטול — אזור אישי → פרטי חשבון</a>
         </p>`
-      : `<p style="font-size:12px;color:#6f6c66;line-height:1.6;margin:24px 0 0;padding-top:16px;border-top:1px solid #ede3c8;">
+      : `<p style="font-size:12px;color:#9a7b4f;line-height:1.6;margin:24px 0 0;padding-top:16px;border-top:1px solid #ede3c8;">
           מייל תפעולי מ«שמלה בקליק» — נשלח לכל המשתמשות הרשומות עם כתובת מייל.
         </p>`;
 
   return `
-    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #e6e2d8;border-radius:16px;background:#ffffff;">
-      <p style="font-size:11px;font-weight:bold;color:#111111;margin:0 0 8px;letter-spacing:0.05em;">✦ שמלה בקליק ✦</p>
-      <h2 style="color:#161513;margin:0 0 16px;font-size:20px;">${escapeHtml(params.subject)}</h2>
+    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #eadaaf;border-radius:16px;background:#fffdf8;">
+      <p style="font-size:11px;font-weight:bold;color:#b8860b;margin:0 0 8px;letter-spacing:0.05em;">✦ שמלה בקליק ✦</p>
+      <h2 style="color:#3d2f24;margin:0 0 16px;font-size:20px;">${escapeHtml(params.subject)}</h2>
       ${greeting}
       ${plainTextToHtml(params.body)}
       ${footer}

@@ -28,8 +28,8 @@ export default function AdminPagination({
   for (let i = start; i <= end; i++) pages.push(i);
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-[#e6e2d8]">
-      <p className="text-xs text-[#6f6c66]">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-[#eadaaf]">
+      <p className="text-xs text-[#6e634c]">
         מציג {from}–{to} מתוך {total}
       </p>
 
@@ -38,7 +38,7 @@ export default function AdminPagination({
           <select
             value={limit}
             onChange={(e) => onLimitChange(Number(e.target.value))}
-            className="text-xs border border-[#ddd8ce] rounded-lg px-2 py-1.5 bg-white"
+            className="text-xs border border-[#decfa8] rounded-lg px-2 py-1.5 bg-white"
           >
             <option value={25}>25 בעמוד</option>
             <option value={50}>50 בעמוד</option>
@@ -49,7 +49,7 @@ export default function AdminPagination({
           type="button"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="px-3 py-1.5 text-xs rounded-lg border border-[#ddd8ce] disabled:opacity-40 bg-white"
+          className="px-3 py-1.5 text-xs rounded-lg border border-[#decfa8] disabled:opacity-40 bg-white"
         >
           הקודם
         </button>
@@ -61,8 +61,8 @@ export default function AdminPagination({
             onClick={() => onPageChange(p)}
             className={`min-w-8 px-2 py-1.5 text-xs rounded-lg border ${
               p === page
-                ? 'bg-[#161513] text-white border-[#161513]'
-                : 'bg-white border-[#ddd8ce] text-[#161513]'
+                ? 'bg-[#2c261a] text-white border-[#2c261a]'
+                : 'bg-white border-[#decfa8] text-[#3d2f24]'
             }`}
           >
             {p}
@@ -73,7 +73,7 @@ export default function AdminPagination({
           type="button"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="px-3 py-1.5 text-xs rounded-lg border border-[#ddd8ce] disabled:opacity-40 bg-white"
+          className="px-3 py-1.5 text-xs rounded-lg border border-[#decfa8] disabled:opacity-40 bg-white"
         >
           הבא
         </button>
