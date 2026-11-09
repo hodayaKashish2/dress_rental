@@ -30,7 +30,7 @@ function DressImageSmart({
     : '';
 
   return (
-    <div className={`relative overflow-hidden bg-[#ebe4d6] ${className ?? ''}`}>
+    <div className={`relative overflow-hidden bg-[#eeece7] ${className ?? ''}`}>
       <>
         <img
           src={src}

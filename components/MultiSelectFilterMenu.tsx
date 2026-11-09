@@ -80,11 +80,11 @@ export default function MultiSelectFilterMenu({
           setOpen(false);
         }}
         className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 text-right rounded-lg transition-colors ${
-          active ? 'bg-[#fff8e8] text-[#3d2f24]' : 'hover:bg-[#fffdf8] text-[#554a33]'
+          active ? 'bg-[#f4f3ef] text-[#161513]' : 'hover:bg-[#fffafb] text-[#4a3d41]'
         }`}
       >
         <span className={`text-xs font-bold shrink-0 w-5 h-5 rounded-md border flex items-center justify-center ${
-          active ? 'bg-[#d4af37] border-[#b8860b] text-white' : 'border-[#eadaaf] bg-white text-transparent'
+          active ? 'bg-[#111111] border-[#111111] text-white' : 'border-[#e6e2d8] bg-white text-transparent'
         }`}>
           ✓
         </span>
@@ -102,14 +102,14 @@ export default function MultiSelectFilterMenu({
         onClick={() => setOpen((value) => !value)}
         className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border text-xs font-bold transition-all ${
           open || selected.length
-            ? 'border-[#d4af37] bg-[#fffdf8] text-[#3d2f24] shadow-sm'
-            : 'border-[#dfc48c] bg-neutral-50 text-[#6e634c] hover:border-[#d4af37]'
+            ? 'border-[#111111] bg-[#fffafb] text-[#161513] shadow-sm'
+            : 'border-[#ddd8ce] bg-neutral-50 text-[#6f6c66] hover:border-[#111111]'
         }`}
       >
-        <span className="text-[#9a7b4f] text-[10px] shrink-0">{open ? '▲' : '▼'}</span>
+        <span className="text-[#6f6c66] text-[10px] shrink-0">{open ? '▲' : '▼'}</span>
         <span className="flex-1 truncate text-right">{selectionSummary(title, selected, resolvedAllLabel, optionLabels)}</span>
         {selected.length > 0 && (
-          <span className="shrink-0 min-w-[1.25rem] h-5 px-1.5 rounded-full bg-[#d4af37] text-white text-[10px] font-black flex items-center justify-center">
+          <span className="shrink-0 min-w-[1.25rem] h-5 px-1.5 rounded-full bg-[#111111] text-white text-[10px] font-black flex items-center justify-center">
             {selected.length}
           </span>
         )}
@@ -121,16 +121,16 @@ export default function MultiSelectFilterMenu({
           role="listbox"
           aria-multiselectable="true"
           aria-label={title}
-          className="mt-1.5 w-full max-h-72 overflow-y-auto overscroll-contain rounded-xl border border-[#eadaaf] bg-white shadow-md p-1.5 pb-2"
+          className="mt-1.5 w-full max-h-72 overflow-y-auto overscroll-contain rounded-xl border border-[#e6e2d8] bg-white shadow-md p-1.5 pb-2"
         >
           {!flatOptions.length ? (
             emptyHint ? (
-              <p className="px-3 py-4 text-[11px] text-[#9a7b4f] text-center leading-relaxed">{emptyHint}</p>
+              <p className="px-3 py-4 text-[11px] text-[#6f6c66] text-center leading-relaxed">{emptyHint}</p>
             ) : null
           ) : groups.length ? (
             groups.map((group) => (
               <div key={group.label} className="mb-1 last:mb-0">
-                <p className="px-3 pt-2 pb-1 text-[10px] font-black text-[#8b6508] bg-[#fffdf8]">
+                <p className="px-3 pt-2 pb-1 text-[10px] font-black text-[#111111] bg-[#fffafb]">
                   {group.label}
                 </p>
                 <div className="space-y-0.5">{group.options.map(renderOption)}</div>
@@ -146,7 +146,7 @@ export default function MultiSelectFilterMenu({
                 type="button"
                 onClick={() => onChange([])}
                 disabled={selected.length === 0}
-                className="w-full py-2 text-[11px] font-bold text-[#b8860b] rounded-lg hover:bg-[#fffdf8] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                className="w-full py-2 text-[11px] font-bold text-[#111111] rounded-lg hover:bg-[#fffafb] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
               >
                 נקה בחירה
               </button>

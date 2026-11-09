@@ -36,11 +36,11 @@ export default function HowItWorksPage() {
       <div className="space-y-6">
         {steps.map((step, index) => (
           <div key={step.title} className="flex gap-4">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#d4af37] to-[#b8860b] text-white font-black flex items-center justify-center">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#111111] font-semibold text-white">
               {index + 1}
             </div>
             <div>
-              <h2 className="font-bold text-[#3d2f24] mb-1">{step.title}</h2>
+              <h2 className="mb-1 font-bold text-[#161513]">{step.title}</h2>
               <p className="text-xs leading-relaxed">{step.text}</p>
             </div>
           </div>
@@ -50,11 +50,11 @@ export default function HowItWorksPage() {
       <div className="pt-4 flex flex-wrap gap-3">
         <Link
           href="/"
-          className="px-5 py-2.5 bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-white rounded-xl text-xs font-bold"
+          className="rounded-full bg-[#111111] px-5 py-2.5 text-xs font-bold text-white"
         >
           לקטלוג השמלות
         </Link>
-        <Link href="/terms" className="px-5 py-2.5 border border-[#decfa8] rounded-xl text-xs font-bold text-[#8b6508]">
+        <Link href="/terms" className="rounded-full border border-[#e6e2d8] px-5 py-2.5 text-xs font-bold text-[#111111]">
           קראי את התקנון
         </Link>
       </div>

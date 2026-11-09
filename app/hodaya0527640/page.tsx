@@ -307,15 +307,15 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#fbf8f0] to-[#e8dcbd] text-[#332c1e]" dir="rtl">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f7f6f3] to-[#e6e2d8] text-[#332c1e]" dir="rtl">
       <SiteHeader />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="font-[family-name:var(--font-luxury)] text-3xl text-[#3d2f24] mb-1">
+          <h1 className="mb-1 text-3xl font-bold text-[#161513]">
             ניהול האתר
           </h1>
-          <p className="text-sm text-[#6e634c]">
+          <p className="text-sm text-[#6f6c66]">
             ממשק מסודר לניהול מאות שמלות — חיפוש, סינון ועימוד
           </p>
         </div>
@@ -323,19 +323,19 @@ export default function AdminPage() {
         {!savedToken ? (
           <form
             onSubmit={handleLogin}
-            className="bg-white rounded-2xl border border-[#eadaaf] p-6 max-w-md space-y-4"
+            className="bg-white rounded-2xl border border-[#e6e2d8] p-6 max-w-md space-y-4"
           >
-            <label className="block text-xs font-bold text-[#8b6508]">סיסמת ניהול (ADMIN_SECRET)</label>
+            <label className="block text-xs font-bold text-[#111111]">סיסמת ניהול (ADMIN_SECRET)</label>
             <input
               type="password"
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              className="w-full p-3 border border-[#decfa8] rounded-xl text-sm"
+              className="w-full p-3 border border-[#ddd8ce] rounded-xl text-sm"
               required
             />
             <button
               type="submit"
-              className="w-full py-3 bg-[#2c261a] text-white rounded-xl text-sm font-bold"
+              className="w-full py-3 bg-[#161513] text-white rounded-xl text-sm font-bold"
             >
               כניסה
             </button>
@@ -344,14 +344,14 @@ export default function AdminPage() {
           <div className="space-y-5">
             <div className="flex flex-wrap justify-between items-center gap-2">
               <div className="flex items-center gap-3">
-                <span className="text-xs text-[#8b6508] font-bold">מחוברת ✓</span>
-                {actionMsg && <span className="text-xs font-bold text-[#b8860b]">{actionMsg}</span>}
+                <span className="text-xs text-[#111111] font-bold">מחוברת ✓</span>
+                {actionMsg && <span className="text-xs font-bold text-[#111111]">{actionMsg}</span>}
               </div>
               <div className="flex gap-2 flex-wrap">
                 <button
                   type="button"
                   onClick={openCatalogPreview}
-                  className="text-xs px-3 py-1.5 border border-[#decfa8] rounded-lg bg-white"
+                  className="text-xs px-3 py-1.5 border border-[#ddd8ce] rounded-lg bg-white"
                   title="פתיחת הקטלוג בדפדפן לפני הורדת PDF"
                 >
                   👁 תצוגה מקדימה
@@ -360,7 +360,7 @@ export default function AdminPage() {
                   type="button"
                   onClick={() => void downloadCatalogPdf()}
                   disabled={catalogPdfBusy}
-                  className="text-xs px-3 py-1.5 border border-[#d4af37] rounded-lg bg-[#fff8e8] text-[#8b6508] font-bold disabled:opacity-60"
+                  className="text-xs px-3 py-1.5 border border-[#111111] rounded-lg bg-[#f4f3ef] text-[#111111] font-bold disabled:opacity-60"
                   title="ניסיוני — מקומי בלבד עד שתדחפי לפרודקשן"
                 >
                   {catalogPdfBusy ? 'מייצר PDF...' : '📥 הורד קטלוג PDF'}
@@ -368,7 +368,7 @@ export default function AdminPage() {
                 <button
                   type="button"
                   onClick={() => bumpRefresh()}
-                  className="text-xs px-3 py-1.5 border border-[#decfa8] rounded-lg bg-white"
+                  className="text-xs px-3 py-1.5 border border-[#ddd8ce] rounded-lg bg-white"
                 >
                   רענון
                 </button>
@@ -403,7 +403,7 @@ export default function AdminPage() {
               </p>
             )}
 
-            <div className="sticky top-0 z-20 bg-[#fbf8f0]/95 backdrop-blur-sm py-2 -mx-1 px-1">
+            <div className="sticky top-0 z-20 bg-[#f7f6f3]/95 backdrop-blur-sm py-2 -mx-1 px-1">
               <div className="flex gap-1 overflow-x-auto pb-1">
                 {TABS.map((item) => {
                   const badge = tabBadges[item.id];
@@ -419,8 +419,8 @@ export default function AdminPage() {
                       onClick={() => navigateTab(item.id)}
                       className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold border transition-colors ${
                         tab === item.id
-                          ? 'bg-[#2c261a] text-white border-[#2c261a]'
-                          : 'bg-white text-[#3d2f24] border-[#eadaaf] hover:border-[#d4af37]'
+                          ? 'bg-[#161513] text-white border-[#161513]'
+                          : 'bg-white text-[#161513] border-[#e6e2d8] hover:border-[#111111]'
                       }`}
                     >
                       {item.label}
@@ -518,21 +518,21 @@ export default function AdminPage() {
                         >
                           <div className="space-y-3 text-xs">
                             {overview.pendingReviews.slice(0, 3).map((review) => (
-                              <div key={review.id} className="bg-white rounded-lg p-3 border border-[#eadaaf]">
+                              <div key={review.id} className="bg-white rounded-lg p-3 border border-[#e6e2d8]">
                                 <p className="font-bold">
                                   אתר · {review.name} · {'⭐'.repeat(review.stars)}
                                 </p>
-                                <p className="italic mt-1 text-[#6e634c]">&quot;{review.text}&quot;</p>
+                                <p className="italic mt-1 text-[#6f6c66]">&quot;{review.text}&quot;</p>
                               </div>
                             ))}
                             {overview.pendingRatings.slice(0, 3).map((rating) => (
-                              <div key={rating.id} className="bg-white rounded-lg p-3 border border-[#eadaaf]">
+                              <div key={rating.id} className="bg-white rounded-lg p-3 border border-[#e6e2d8]">
                                 <p className="font-bold">
                                   שמלה · {rating.dress_name} · {rating.customer_name} ·{' '}
                                   {'⭐'.repeat(rating.stars)}
                                 </p>
                                 {rating.review_text && (
-                                  <p className="italic mt-1 text-[#6e634c]">&quot;{rating.review_text}&quot;</p>
+                                  <p className="italic mt-1 text-[#6f6c66]">&quot;{rating.review_text}&quot;</p>
                                 )}
                               </div>
                             ))}
@@ -545,11 +545,11 @@ export default function AdminPage() {
 
                 <AdminCollapsibleSection title="הזמנות מאושרות אחרונות">
                   {overview.recentBookings.length === 0 ? (
-                    <p className="text-xs text-[#6e634c]">אין הזמנות אחרונות</p>
+                    <p className="text-xs text-[#6f6c66]">אין הזמנות אחרונות</p>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
-                        <thead className="text-[#6e634c] border-b border-[#eadaaf]">
+                        <thead className="text-[#6f6c66] border-b border-[#e6e2d8]">
                           <tr>
                             <th className="p-2 text-right">שם</th>
                             <th className="p-2 text-right">תאריך אירוע</th>
@@ -563,7 +563,7 @@ export default function AdminPage() {
                               <td className="p-2">{b.customer_name}</td>
                               <td className="p-2">{b.event_date}</td>
                               <td className="p-2">{BOOKING_STATUS_LABELS[b.status] || b.status}</td>
-                              <td className="p-2 text-[#9a7b4f]">
+                              <td className="p-2 text-[#6f6c66]">
                                 {new Date(b.created_at).toLocaleDateString('he-IL')}
                               </td>
                             </tr>
@@ -575,7 +575,7 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={() => navigateTab('bookings')}
-                    className="mt-3 text-xs font-bold text-[#8b6508] underline"
+                    className="mt-3 text-xs font-bold text-[#111111] underline"
                   >
                     הזמנות מאושרות →
                   </button>
@@ -586,20 +586,20 @@ export default function AdminPage() {
                     <button
                       type="button"
                       onClick={() => navigateTab('catalog')}
-                      className="text-right bg-[#fffdf8] border border-[#e6c687] rounded-2xl p-5 hover:shadow-md transition-shadow w-full"
+                      className="text-right bg-[#fffafb] border border-[#cfc8bc] rounded-2xl p-5 hover:shadow-md transition-shadow w-full"
                     >
-                      <h3 className="font-black text-[#8b6508] mb-1">קטלוג שמלות</h3>
-                      <p className="text-xs text-[#6e634c]">
+                      <h3 className="font-black text-[#111111] mb-1">קטלוג שמלות</h3>
+                      <p className="text-xs text-[#6f6c66]">
                         חיפוש, סינון לפי עיר וחשיפה, עימוד — לניהול {overview.stats.published} שמלות
                       </p>
                     </button>
                     <button
                       type="button"
                       onClick={() => navigateTab('catalog', 'yes')}
-                      className="text-right bg-[#fffdf8] border border-[#e6c687] rounded-2xl p-5 hover:shadow-md transition-shadow w-full"
+                      className="text-right bg-[#fffafb] border border-[#cfc8bc] rounded-2xl p-5 hover:shadow-md transition-shadow w-full"
                     >
-                      <h3 className="font-black text-[#8b6508] mb-1">חשיפה מועדפת</h3>
-                      <p className="text-xs text-[#6e634c]">
+                      <h3 className="font-black text-[#111111] mb-1">חשיפה מועדפת</h3>
+                      <p className="text-xs text-[#6f6c66]">
                         {overview.stats.featured} שמלות עם חשיפה מוגברת בקטלוג
                       </p>
                     </button>
@@ -639,13 +639,13 @@ export default function AdminPage() {
                 <h2 className="font-bold text-lg">
                   ממתינות לאישור תשלום ({overview?.stats.pendingPayments ?? pendingPaymentsTotal})
                 </h2>
-                <p className="text-xs text-[#6e634c]">
+                <p className="text-xs text-[#6f6c66]">
                   רק הזמנות שהשוכרת דיווחה עליהן תשלום (ביט/העברה) — ממתינות לאישור שלך
                 </p>
                 {loadingPendingPayments ? (
                   <p className="text-sm">טוען...</p>
                 ) : pendingPayments.length === 0 ? (
-                  <p className="text-xs text-[#6e634c]">אין הזמנות ממתינות לתשלום 🎉</p>
+                  <p className="text-xs text-[#6f6c66]">אין הזמנות ממתינות לתשלום 🎉</p>
                 ) : (
                   <>
                     <AdminBookingsGrid
@@ -678,7 +678,7 @@ export default function AdminPage() {
             {tab === 'bookings' && (
               <section className="space-y-4">
                 <h2 className="font-bold text-lg">הזמנות מאושרות ({bookingsTotal})</h2>
-                <p className="text-xs text-[#6e634c]">רק הזמנות שאושרו ושולמו — לא כולל ממתינות לתשלום</p>
+                <p className="text-xs text-[#6f6c66]">רק הזמנות שאושרו ושולמו — לא כולל ממתינות לתשלום</p>
                 <form
                   className="flex gap-2"
                   onSubmit={(e) => {
@@ -691,9 +691,9 @@ export default function AdminPage() {
                     value={bookingsSearchInput}
                     onChange={(e) => setBookingsSearchInput(e.target.value)}
                     placeholder="חיפוש לפי שם, טלפון או אימייל..."
-                    className="flex-1 p-2.5 border border-[#decfa8] rounded-xl text-sm bg-white"
+                    className="flex-1 p-2.5 border border-[#ddd8ce] rounded-xl text-sm bg-white"
                   />
-                  <button type="submit" className="px-4 py-2 bg-[#2c261a] text-white rounded-xl text-sm font-bold">
+                  <button type="submit" className="px-4 py-2 bg-[#161513] text-white rounded-xl text-sm font-bold">
                     חפשי
                   </button>
                 </form>
@@ -701,7 +701,7 @@ export default function AdminPage() {
                 {loadingBookings ? (
                   <p className="text-sm">טוען הזמנות...</p>
                 ) : bookings.length === 0 ? (
-                  <p className="text-xs text-[#6e634c]">לא נמצאו הזמנות</p>
+                  <p className="text-xs text-[#6f6c66]">לא נמצאו הזמנות</p>
                 ) : (
                   <>
                     <AdminBookingsGrid bookings={bookings} variant="confirmed" />

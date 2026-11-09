@@ -53,15 +53,15 @@ export function readPasswordResetToken(token: string): ResetPayload | null {
 
 export function passwordResetEmailHtml(resetUrl: string) {
   return `
-    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #eadaaf;border-radius:16px;background:#fffdf8;">
-      <h2 style="color:#3d2f24;margin-top:0;">איפוס סיסמה</h2>
-      <p style="line-height:1.7;color:#554a33;">קיבלנו בקשה לאפס את הסיסמה בחשבון שלך באתר שמלה בקליק.</p>
+    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #e6e2d8;border-radius:16px;background:#ffffff;">
+      <h2 style="color:#161513;margin-top:0;">איפוס סיסמה</h2>
+      <p style="line-height:1.7;color:#3a3834;">קיבלנו בקשה לאפס את הסיסמה בחשבון שלך באתר שמלה בקליק.</p>
       <p style="margin:24px 0;">
-        <a href="${resetUrl}" style="display:inline-block;background:#b8860b;color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:bold;">
+        <a href="${resetUrl}" style="display:inline-block;background:#ff4b2b;color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:bold;">
           בחירת סיסמה חדשה
         </a>
       </p>
-      <p style="line-height:1.7;color:#554a33;font-size:13px;">הקישור תקף ל-20 דקות, ורק לחשבון הזה. אם לא ביקשת איפוס, אפשר להתעלם מהמייל.</p>
+      <p style="line-height:1.7;color:#3a3834;font-size:13px;">הקישור תקף ל-20 דקות, ורק לחשבון הזה. אם לא ביקשת איפוס, אפשר להתעלם מהמייל.</p>
     </div>
   `;
 }

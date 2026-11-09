@@ -29,12 +29,12 @@ export default function SavedDressList({
 }: Props) {
   if (items.length === 0) {
     return (
-      <div className="text-center py-10 px-4 bg-white/80 rounded-2xl border border-dashed border-[#decfa8]">
+      <div className="text-center py-10 px-4 bg-white/80 rounded-2xl border border-dashed border-[#ddd8ce]">
         <span className="text-4xl block mb-3 opacity-80">👗</span>
-        <p className="text-sm text-[#6e634c]">{emptyMessage}</p>
+        <p className="text-sm text-[#6f6c66]">{emptyMessage}</p>
         <Link
           href={emptyActionHref}
-          className="inline-block mt-4 px-5 py-2.5 bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-white rounded-xl text-xs font-bold shadow-md"
+          className="inline-block mt-4 px-5 py-2.5 bg-gradient-to-r from-[#111111] to-[#2a2a2a] text-white rounded-xl text-xs font-bold shadow-md"
         >
           {emptyActionLabel}
         </Link>
@@ -52,7 +52,7 @@ export default function SavedDressList({
           return (
             <li
               key={item.id}
-              className="group flex gap-3 sm:gap-4 bg-white rounded-2xl border-2 border-[#ebd3a4]/70 p-3 sm:p-4 shadow-[0_8px_24px_rgba(212,175,55,0.08)] hover:border-[#d4af37] hover:shadow-[0_12px_32px_rgba(212,175,55,0.15)] transition-all"
+              className="group flex gap-3 sm:gap-4 bg-white rounded-2xl border-2 border-[#ddd8ce]/70 p-3 sm:p-4 shadow-[0_8px_24px_rgba(212,175,55,0.08)] hover:border-[#111111] hover:shadow-[0_12px_32px_rgba(212,175,55,0.15)] transition-all"
             >
               <button
                 type="button"
@@ -62,7 +62,7 @@ export default function SavedDressList({
                   onViewDetails ? 'cursor-pointer' : 'cursor-default'
                 }`}
               >
-                <div className="relative shrink-0 w-20 h-24 sm:w-24 sm:h-28 rounded-xl overflow-hidden border border-[#f0e2c3] bg-[#faf8f3]">
+                <div className="relative shrink-0 w-20 h-24 sm:w-24 sm:h-28 rounded-xl overflow-hidden border border-[#e6e2d8] bg-[#f7f6f3]">
                   {image ? (
                     <DressImageFill
                       src={image}
@@ -72,26 +72,26 @@ export default function SavedDressList({
                       hoverScale
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl text-[#decfa8]">👗</div>
+                    <div className="w-full h-full flex items-center justify-center text-2xl text-[#ddd8ce]">👗</div>
                   )}
-                  <span className="absolute bottom-1 right-1 bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-white text-[8px] font-black px-1.5 py-0.5 rounded-md shadow">
+                  <span className="absolute bottom-1 right-1 bg-gradient-to-r from-[#111111] to-[#2a2a2a] text-white text-[8px] font-black px-1.5 py-0.5 rounded-md shadow">
                     {item.size || '—'}
                   </span>
                 </div>
 
                 <div className="flex-1 min-w-0 flex flex-col">
-                  <h3 className="font-bold text-sm sm:text-base text-[#3d2f24] truncate group-hover:text-[#b8860b] transition-colors">
+                  <h3 className="font-bold text-sm sm:text-base text-[#161513] truncate group-hover:text-[#111111] transition-colors">
                     {item.name}
                   </h3>
                   {item.city && (
-                    <p className="text-[10px] sm:text-xs text-[#9a7b4f] mt-0.5">📍 {item.city}</p>
+                    <p className="text-[10px] sm:text-xs text-[#6f6c66] mt-0.5">📍 {item.city}</p>
                   )}
                   {onViewDetails && (
-                    <p className="text-[10px] text-[#b8860b] font-bold mt-1">לחצי לפרטים מלאים →</p>
+                    <p className="text-[10px] text-[#111111] font-bold mt-1">לחצי לפרטים מלאים →</p>
                   )}
-                  <p className="text-base sm:text-lg font-black text-[#2c261a] mt-auto pt-1">
+                  <p className="text-base sm:text-lg font-black text-[#161513] mt-auto pt-1">
                     ₪{item.price}
-                    <span className="text-[10px] font-bold text-[#9a7b4f] mr-1">להשכרה</span>
+                    <span className="text-[10px] font-bold text-[#6f6c66] mr-1">להשכרה</span>
                   </p>
                 </div>
               </button>
@@ -102,14 +102,14 @@ export default function SavedDressList({
                     <button
                       type="button"
                       onClick={() => onAction(item)}
-                      className="px-3 py-1.5 rounded-lg bg-[#2c261a] hover:bg-[#b8860b] text-white text-[10px] font-bold transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-[#161513] hover:bg-[#111111] text-white text-[10px] font-bold transition-colors"
                     >
                       {getActionLabel ? getActionLabel(item) : actionLabel}
                     </button>
                   )}
                   <Link
                     href="/"
-                    className="px-3 py-1.5 rounded-lg border border-[#decfa8] text-[#8b6508] text-[10px] font-bold hover:bg-[#fffdf8]"
+                    className="px-3 py-1.5 rounded-lg border border-[#ddd8ce] text-[#111111] text-[10px] font-bold hover:bg-[#fffafb]"
                   >
                     לקטלוג
                   </Link>
@@ -128,9 +128,9 @@ export default function SavedDressList({
       </ul>
 
       {showTotal && (
-        <div className="flex justify-between items-center bg-gradient-to-l from-[#fffdf8] to-[#f4ebd4] rounded-xl border border-[#decfa8] px-4 py-3">
-          <span className="text-xs font-bold text-[#6e634c]">סה״כ משוער:</span>
-          <span className="text-lg font-black text-[#2c261a]">₪{total}</span>
+        <div className="flex justify-between items-center bg-gradient-to-l from-[#ffffff] to-[#eeece7] rounded-xl border border-[#ddd8ce] px-4 py-3">
+          <span className="text-xs font-bold text-[#6f6c66]">סה״כ משוער:</span>
+          <span className="text-lg font-black text-[#161513]">₪{total}</span>
         </div>
       )}
     </div>

@@ -40,13 +40,13 @@ function buildCatalogEmailHtml(params: {
     .join('');
 
   return `
-    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #eadaaf;border-radius:16px;background:#fffdf8;">
-      <h2 style="color:#3d2f24;margin-top:0;">קטלוג ${SITE_NAME}</h2>
+    <div dir="rtl" style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #e6e2d8;border-radius:16px;background:#ffffff;">
+      <h2 style="color:#161513;margin-top:0;">קטלוג ${SITE_NAME}</h2>
       ${
         isMulti
-          ? `<p style="line-height:1.7;color:#554a33;">מצורפים <strong>${partCount} קבצי PDF</strong> עם ${totalDresses} שמלות מהקטלוג.</p>
-             <ul style="line-height:1.7;color:#554a33;padding-right:18px;">${partsList}</ul>`
-          : `<p style="line-height:1.7;color:#554a33;">מצורף קובץ PDF עם ${totalDresses} שמלות מהקטלוג.</p>`
+          ? `<p style="line-height:1.7;color:#3a3834;">מצורפים <strong>${partCount} קבצי PDF</strong> עם ${totalDresses} שמלות מהקטלוג.</p>
+             <ul style="line-height:1.7;color:#3a3834;padding-right:18px;">${partsList}</ul>`
+          : `<p style="line-height:1.7;color:#3a3834;">מצורף קובץ PDF עם ${totalDresses} שמלות מהקטלוג.</p>`
       }
     </div>
   `;

@@ -10,21 +10,21 @@ function escapeHtml(value: string) {
 
 function dressUpdateImageTag(url: string, label?: string) {
   const caption = label
-    ? `<p style="font-size:11px;color:#8b6508;margin:4px 0 0;font-weight:bold;">${escapeHtml(label)}</p>`
+    ? `<p style="font-size:11px;color:#111111;margin:4px 0 0;font-weight:bold;">${escapeHtml(label)}</p>`
     : '';
   return `<div style="display:inline-block;text-align:center;margin:4px;vertical-align:top;">
-    <img src="${url}" alt="" style="width:100px;height:130px;object-fit:contain;border-radius:8px;border:1px solid #eadaaf;background:#fff;" />
+    <img src="${url}" alt="" style="width:100px;height:130px;object-fit:contain;border-radius:8px;border:1px solid #e6e2d8;background:#fff;" />
     ${caption}
   </div>`;
 }
 
 function fieldChangeRow(label: string, before: string, after: string) {
-  return `<li style="margin-bottom:12px;list-style:none;padding:10px 12px;border-radius:10px;background:#fffdf8;border:1px solid #f0e8d0;">
-    <div style="font-weight:bold;color:#8b6508;margin-bottom:6px;">${escapeHtml(label)}</div>
-    <div style="color:#9a7b4f;font-size:13px;margin-bottom:4px;">היה:</div>
-    <div style="text-decoration:line-through;color:#9a7b4f;margin-bottom:8px;">${escapeHtml(before)}</div>
-    <div style="color:#8b6508;font-size:13px;margin-bottom:4px;font-weight:bold;">עכשיו:</div>
-    <div style="font-weight:bold;color:#3d2f24;font-size:15px;">${escapeHtml(after)}</div>
+  return `<li style="margin-bottom:12px;list-style:none;padding:10px 12px;border-radius:10px;background:#ffffff;border:1px solid #f0e8d0;">
+    <div style="font-weight:bold;color:#111111;margin-bottom:6px;">${escapeHtml(label)}</div>
+    <div style="color:#6f6c66;font-size:13px;margin-bottom:4px;">היה:</div>
+    <div style="text-decoration:line-through;color:#6f6c66;margin-bottom:8px;">${escapeHtml(before)}</div>
+    <div style="color:#111111;font-size:13px;margin-bottom:4px;font-weight:bold;">עכשיו:</div>
+    <div style="font-weight:bold;color:#161513;font-size:15px;">${escapeHtml(after)}</div>
   </li>`;
 }
 
@@ -35,13 +35,13 @@ export function buildDressUpdateDiffHtml(diff: DressUpdateDiff) {
   const hasImageChanges = imageChanges.removed.length > 0 || imageChanges.added.length > 0;
 
   if (!hasFieldChanges && !hasImageChanges) {
-    return '<p style="line-height:1.7;color:#554a33;">לא זוהו שינויים בפרטים.</p>';
+    return '<p style="line-height:1.7;color:#3a3834;">לא זוהו שינויים בפרטים.</p>';
   }
 
-  let html = '<div style="margin:16px 0;padding:16px;border:1px solid #eadaaf;border-radius:12px;background:#fff;">';
+  let html = '<div style="margin:16px 0;padding:16px;border:1px solid #e6e2d8;border-radius:12px;background:#fff;">';
 
   if (hasFieldChanges) {
-    html += '<p style="margin:0 0 10px;font-weight:bold;color:#3d2f24;">שינויים בפרטים:</p><ul style="margin:0;padding:0;">';
+    html += '<p style="margin:0 0 10px;font-weight:bold;color:#161513;">שינויים בפרטים:</p><ul style="margin:0;padding:0;">';
     for (const change of changes) {
       html += fieldChangeRow(change.label, change.before, change.after);
     }
@@ -49,7 +49,7 @@ export function buildDressUpdateDiffHtml(diff: DressUpdateDiff) {
   }
 
   if (hasImageChanges) {
-    html += '<p style="margin:16px 0 8px;font-weight:bold;color:#3d2f24;">שינויים בתמונות:</p>';
+    html += '<p style="margin:16px 0 8px;font-weight:bold;color:#161513;">שינויים בתמונות:</p>';
 
     const isSingleSwap = imageChanges.removed.length === 1 && imageChanges.added.length === 1;
 
@@ -66,10 +66,10 @@ export function buildDressUpdateDiffHtml(diff: DressUpdateDiff) {
       </table>`;
     } else {
       if (imageChanges.removed.length > 0) {
-        html += `<p style="line-height:1.7;color:#9a7b4f;margin:8px 0 4px;text-decoration:underline;">תמונות שהוסרו:</p><div>${imageChanges.removed.map((url) => dressUpdateImageTag(url)).join('')}</div>`;
+        html += `<p style="line-height:1.7;color:#6f6c66;margin:8px 0 4px;text-decoration:underline;">תמונות שהוסרו:</p><div>${imageChanges.removed.map((url) => dressUpdateImageTag(url)).join('')}</div>`;
       }
       if (imageChanges.added.length > 0) {
-        html += `<p style="line-height:1.7;color:#3d2f24;margin:8px 0 4px;font-weight:bold;">תמונות חדשות:</p><div>${imageChanges.added.map((url) => dressUpdateImageTag(url, 'חדש')).join('')}</div>`;
+        html += `<p style="line-height:1.7;color:#161513;margin:8px 0 4px;font-weight:bold;">תמונות חדשות:</p><div>${imageChanges.added.map((url) => dressUpdateImageTag(url, 'חדש')).join('')}</div>`;
       }
     }
   }
