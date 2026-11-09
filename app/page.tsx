@@ -2075,7 +2075,7 @@ export default function Home() {
                   <span className="text-[#4a152c] text-base">{isOpen ? '−' : '＋'}</span>
                 </button>
                 {isOpen && (
-                  <div className="p-4 bg-[#fffdf9] border-t border-[#f7eed8] text-xs text-[#6e5e62] leading-relaxed">
+                  <div className="border-t border-[#6b2340] bg-[#6b2340] p-4 text-xs leading-relaxed text-white">
                     {faq.a}
                   </div>
                 )}
