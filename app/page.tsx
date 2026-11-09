@@ -1643,11 +1643,11 @@ export default function Home() {
                 </div>
 
                 {/* פרטים — רצועה דקה כמו SHEIN (~15% מהכרטיס) */}
-                <div className="bg-[#fffafb]">
+                <div className="border-t-2 border-[#6b2340] bg-white">
                   <button
                     type="button"
                     onClick={() => setDetailsDress(dress)}
-                    className="line-clamp-2 w-full cursor-pointer bg-[#6b2340] px-3 py-2.5 text-right text-[15px] font-semibold leading-snug text-white transition hover:bg-[#4a152c]"
+                    className="line-clamp-2 min-h-[2.75rem] w-full cursor-pointer px-3 pt-2.5 text-right text-[13px] font-semibold leading-snug text-[#2a1f22] transition hover:text-[#6b2340]"
                   >
                     {dress.name}
                   </button>
@@ -2057,7 +2057,7 @@ export default function Home() {
       )}
 
       {/* 👑 אזור שאלות נפוצות */}
-      <section className="max-w-3xl mx-auto px-4 mt-24 relative z-10">
+      <section className="relative z-10 mx-auto mt-24 mb-16 w-full max-w-6xl px-4">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-serif italic text-neutral-900">שאלות ותשובות נפוצות</h2>
           <div className="w-12 h-[1.5px] bg-[#6b2340] mx-auto mt-3"></div>
@@ -2431,7 +2431,7 @@ export default function Home() {
                     href={ownerWhatsAppLink(coordinateDress.owner_phone, coordinateDress.name)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block w-full text-center py-2.5 bg-[#25D366] text-white text-xs font-bold rounded-xl mt-2"
+                    className="mt-2 block w-full rounded-xl bg-[#6b2340] py-2.5 text-center text-xs font-bold text-white"
                   >
                     שלחי הודעה בוואטסאפ →
                   </a>
@@ -2480,7 +2480,7 @@ export default function Home() {
         href={WHATSAPP_LINK}
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 bg-[#25D366] text-white p-3 sm:p-3.5 rounded-full shadow-[0_8px_30px_rgba(37,211,102,0.4)] hover:bg-[#20ba5a] transition-all hover:scale-105 flex items-center justify-center font-bold text-base sm:text-lg"
+        className="fixed bottom-4 right-4 z-40 flex items-center justify-center rounded-full bg-[#6b2340] p-3 text-white shadow-[0_8px_30px_rgba(107,35,64,0.35)] transition-all hover:scale-105 hover:bg-[#4a152c] sm:bottom-6 sm:right-6 sm:p-3.5"
         title="WhatsApp"
       >
         💬

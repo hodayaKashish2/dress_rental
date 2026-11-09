@@ -1487,7 +1487,7 @@ function AccountPageContent() {
                                   href={ownerWhatsAppLink(r.owner_phone, r.dress_name)}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-[10px] font-bold text-[#25D366] hover:underline"
+                                  className="inline-flex items-center gap-1 text-[10px] font-bold text-[#6b2340] hover:underline"
                                 >
                                   💬 WhatsApp למשכירה
                                 </a>
