@@ -8,6 +8,7 @@ import {
 import { formatPhoneForStorage, phoneValidationMessage } from '@/lib/israeli-phone';
 import { getSupabaseAdmin, isSupabaseConfigured } from '@/lib/supabase/server';
 import { formatSiteUsersDbError } from '@/lib/db-errors';
+import { EMAIL_ALREADY_USED_MESSAGE, isEmailUsedByAnotherUser } from '@/lib/site-user-profile';
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured()) {
@@ -62,6 +63,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'שם המשתמש כבר תפוס — בחרי שם משתמש אחר' }, { status: 409 });
     }
 
+    if (await isEmailUsedByAnotherUser(supabase, email)) {
+      return NextResponse.json({ error: EMAIL_ALREADY_USED_MESSAGE }, { status: 409 });
+    }
+
     const insertPayload = {
       username,
       password_hash: hashPassword(password),
@@ -101,7 +106,10 @@ export async function POST(request: Request) {
     }
 
     if (error?.message?.includes('duplicate') || error?.code === '23505') {
-      return NextResponse.json({ error: 'שם המשתמש כבר תפוס — בחרי שם משתמש אחר' }, { status: 409 });
+      const duplicateMessage = (error.message || '').toLowerCase().includes('email')
+        ? EMAIL_ALREADY_USED_MESSAGE
+        : 'שם המשתמש כבר תפוס — בחרי שם משתמש אחר';
+      return NextResponse.json({ error: duplicateMessage }, { status: 409 });
     }
 
     if (error) {
