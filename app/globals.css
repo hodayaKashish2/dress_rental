@@ -75,7 +75,7 @@ img {
 }
 
 .reviews-scroller {
-  scrollbar-color: #c44b8a #f6e4ee;
+  scrollbar-color: #6b2340 #ead4dc;
   scrollbar-width: thin;
 }
 
@@ -84,11 +84,11 @@ img {
 }
 
 .reviews-scroller::-webkit-scrollbar-track {
-  background: #f6e4ee;
+  background: #ead4dc;
   border-radius: 999px;
 }
 
 .reviews-scroller::-webkit-scrollbar-thumb {
-  background: #c44b8a;
+  background: #6b2340;
   border-radius: 999px;
 }

@@ -1937,7 +1937,7 @@ export default function Home() {
 
       {/* 💬 סקשן חוות דעת לקוחות */}
       <section className="relative z-10 mx-auto mt-24 max-w-6xl px-4">
-        <div className="rounded-3xl bg-[#f7e8ef] px-4 py-8 sm:px-8">
+        <div className="rounded-3xl bg-[#f3e4e8] px-4 py-8 sm:px-8">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="text-right">
             <p className="text-sm font-bold text-[#6b2340]">חוויות אמיתיות</p>

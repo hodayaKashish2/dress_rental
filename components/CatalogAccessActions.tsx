@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import CatalogEmailModal from '@/components/CatalogEmailModal';
 
 const actionBtnClass =
-  'text-[11px] font-bold text-[#6b2340] px-3 py-1.5 border border-[#6b2340] rounded-lg bg-[#f6eef1] hover:bg-[#f0e0e5] transition-colors';
+  'inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-[12px] font-bold text-[#3a2430] shadow-sm transition-colors hover:bg-[#fff8fa]';
 
 type CatalogAccessActionsProps = {
   onError?: (message: string) => void;
@@ -22,7 +22,8 @@ export default function CatalogAccessActions({ onError }: CatalogAccessActionsPr
         className={actionBtnClass}
         title="קבלת הקטלוג במייל"
       >
-        📧 שליחת הקטלוג במייל
+        <span aria-hidden>✉</span>
+        שליחת הקטלוג במייל
       </button>
 
       <CatalogEmailModal open={emailModalOpen} onClose={closeEmailModal} onError={onError} />

@@ -222,8 +222,10 @@ export default function SiteHeader() {
               <button
                 type="button"
                 onClick={() => openAuthModal({ reason: 'general', initialView: 'login' })}
-                className={`rounded-full px-3 py-2 text-[12px] font-bold ${
-                  overlay ? 'text-white hover:bg-white/15' : 'text-[#6b2340] hover:bg-[#f6eef1]'
+                className={`rounded-full border px-3 py-2 text-[12px] font-bold ${
+                  overlay
+                    ? 'border-white text-white hover:bg-white/15'
+                    : 'border-[#6b2340] text-[#6b2340] hover:bg-[#f6eef1]'
                 }`}
               >
                 התחברות
@@ -326,7 +328,7 @@ export default function SiteHeader() {
                     closeMobileMenu();
                     openAuthModal({ reason: 'general', initialView: 'login' });
                   }}
-                  className="rounded-xl border border-[#ead8dc] px-4 py-3 text-sm font-bold text-[#6b2340]"
+                  className="rounded-xl border border-[#6b2340] px-4 py-3 text-sm font-bold text-[#6b2340]"
                 >
                   התחברות
                 </button>
