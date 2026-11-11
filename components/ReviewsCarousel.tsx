@@ -52,18 +52,24 @@ export default function ReviewsCarousel({ reviews }: Props) {
         {reviews.map((review) => (
           <article
             key={review.id}
-            className="flex w-[min(78vw,18rem)] shrink-0 snap-start flex-col items-center rounded-2xl bg-[#fbf3f7] px-6 py-7 text-center"
+            className="flex w-[min(78vw,24rem)] shrink-0 snap-start flex-col justify-between rounded-2xl border border-[#ead8dc] bg-white p-6 shadow-sm"
           >
-            <div className="mb-3 flex gap-0.5 text-[#c2185b]">
-              {Array.from({ length: review.stars }).map((_, index) => (
-                <span key={index}>★</span>
-              ))}
+            <div>
+              <div className="mb-3 flex gap-0.5 text-[#6b2340]">
+                {Array.from({ length: review.stars }).map((_, index) => (
+                  <span key={index}>⭐</span>
+                ))}
+              </div>
+              <p className="text-xs italic leading-relaxed text-[#6e5e62]">&quot;{review.text}&quot;</p>
             </div>
-            <p className="text-sm font-bold leading-relaxed text-[#2a1f22]">&quot;{review.text}&quot;</p>
-            <p className="mt-4 text-xs text-[#6f6570]">
-              {review.name}
-              {review.role ? ` · ${review.role}` : ''}
-            </p>
+            <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-3">
+              <span className="text-xs font-bold text-neutral-900">{review.name}</span>
+              {review.role ? (
+                <span className="rounded-full bg-[#f6eef1] px-2 py-0.5 text-[10px] font-bold text-[#6b2340]">
+                  {review.role}
+                </span>
+              ) : null}
+            </div>
           </article>
         ))}
       </div>

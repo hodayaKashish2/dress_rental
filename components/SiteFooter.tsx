@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import { CONTACT_EMAIL, CONTACT_PHONE, SITE_NAME, WHATSAPP_LINK } from '@/lib/site-config';
 
-const footerLinkClass = 'text-sm font-semibold text-[#fff4fb] underline decoration-[#fff4fb]/70 underline-offset-4 transition-colors hover:text-white';
+const footerLinkClass = 'text-sm font-semibold text-white underline decoration-white/70 underline-offset-4 transition-colors hover:text-[#f6eef1]';
 
 export default function SiteFooter() {
   return (
-    <footer className="relative z-10 mt-16 w-full bg-[#5a2158] text-[#fff7fc]">
+    <footer className="relative z-10 mt-16 w-full bg-[#6b2340] text-white">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-12 md:grid-cols-3">
         <div>
-          <h3 className="mb-3 text-2xl font-black text-[#f4a3d4]">{SITE_NAME}</h3>
-          <p className="text-sm leading-relaxed text-[#fff4fb]">
+          <h3 className="mb-3 text-2xl font-black text-white">{SITE_NAME}</h3>
+          <p className="text-sm leading-relaxed text-white">
             פלטפורמה לתיווך בין בנות שמשכירות שמלות לבין בנות שמחפשות שמלה לאירוע — בקליק, בביטחון ובסטייל.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-[#f4a3d4]/35 py-4 text-center text-xs font-semibold text-[#fff4fb]">
+      <div className="border-t border-white/25 py-4 text-center text-xs font-semibold text-white">
         © {new Date().getFullYear()} {SITE_NAME} · כל הזכויות שמורות
       </div>
     </footer>

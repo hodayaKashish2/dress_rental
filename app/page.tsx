@@ -1937,14 +1937,15 @@ export default function Home() {
 
       {/* 💬 סקשן חוות דעת לקוחות */}
       <section className="relative z-10 mx-auto mt-24 max-w-6xl px-4">
+        <div className="rounded-3xl bg-[#f7e8ef] px-4 py-8 sm:px-8">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="text-right">
-            <p className="text-sm font-bold text-[#c2185b]">חוויות אמיתיות</p>
+            <p className="text-sm font-bold text-[#6b2340]">חוויות אמיתיות</p>
             <h2 className="mt-1 text-3xl font-black text-[#2a1030] sm:text-4xl">מה המשתמשות מספרות</h2>
           </div>
           <button
             onClick={openAddReviewForm}
-            className="rounded-full bg-[#f3e4ee] px-5 py-2.5 text-sm font-bold text-[#7a3e78] transition hover:bg-[#ead4e6]"
+            className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#6b2340] transition hover:bg-[#fff7fa]"
           >
             הוסיפי תגובה
           </button>
@@ -1959,6 +1960,7 @@ export default function Home() {
         ) : (
           <ReviewsCarousel reviews={reviewsList} />
         )}
+        </div>
       </section>
 
       {/* ✍️ מודאל הוספת תגובה */}
@@ -2464,7 +2466,7 @@ export default function Home() {
         href={WHATSAPP_LINK}
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed bottom-4 right-4 z-40 flex items-center justify-center rounded-full bg-[#e85aad] p-3 text-white shadow-[0_8px_30px_rgba(232,90,173,0.4)] transition-all hover:scale-105 hover:bg-[#d43d96] sm:bottom-6 sm:right-6 sm:p-3.5"
+        className="fixed bottom-4 right-4 z-40 flex items-center justify-center rounded-full bg-[#6b2340] p-3 text-white shadow-[0_8px_30px_rgba(107,35,64,0.35)] transition-all hover:scale-105 hover:bg-[#4a152c] sm:bottom-6 sm:right-6 sm:p-3.5"
         title="WhatsApp"
       >
         💬
