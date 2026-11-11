@@ -12,12 +12,12 @@ import { navigateAccountHub } from '@/lib/account-hub-nav';
 import { isLoggedIn } from '@/lib/require-login';
 
 const links = [
-  { href: '/', label: 'קטלוג', icon: '🏠' },
-  { href: '/account', label: 'האזור שלי', icon: '👤' },
-  { href: '/how-it-works', label: 'איך זה עובד', icon: '✨' },
-  { href: '/terms', label: 'תקנון', icon: '📋' },
-  { href: '/privacy', label: 'פרטיות', icon: '🔒' },
-  { href: '/contact', label: 'צור קשר', icon: '💬' },
+  { href: '/', label: 'קטלוג' },
+  { href: '/account', label: 'האזור שלי' },
+  { href: '/how-it-works', label: 'איך זה עובד' },
+  { href: '/terms', label: 'תקנון' },
+  { href: '/privacy', label: 'פרטיות' },
+  { href: '/contact', label: 'צור קשר' },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -51,36 +51,40 @@ function NavLink({
   link,
   active,
   onClick,
-  variant = 'tab',
+  variant = 'bar',
   guestOnClick,
   forceHub,
+  overlay = false,
 }: {
   link: (typeof links)[number];
   active: boolean;
   onClick?: () => void;
-  variant?: 'tab' | 'menu';
+  variant?: 'bar' | 'menu';
   guestOnClick?: () => void;
   forceHub?: boolean;
+  overlay?: boolean;
 }) {
   const className =
     variant === 'menu'
-      ? `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold ${
+      ? `block rounded-xl px-4 py-3 text-sm font-bold ${
           active ? 'bg-[#f6eef1] text-[#6b2340]' : 'text-[#2c2426] hover:bg-[#faf7f5]'
         }`
-      : `group relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-t-xl border border-b-0 px-3 py-2.5 text-[11px] font-bold transition-all lg:px-5 lg:py-3 lg:text-xs ${
-          active
-            ? 'z-10 -mb-px border-[#ead8dc] bg-white text-[#6b2340] shadow-[0_-4px_16px_rgba(107,35,64,0.12)]'
-            : 'border-transparent text-[#7a5e64] hover:-translate-y-0.5 hover:border-[#ead8dc] hover:bg-white/90 hover:text-[#6b2340]'
+      : `relative py-1 text-[13px] font-semibold tracking-wide transition-colors ${
+          overlay
+            ? active
+              ? 'text-white'
+              : 'text-white/80 hover:text-white'
+            : active
+              ? 'text-[#6b2340]'
+              : 'text-[#4a3d41] hover:text-[#6b2340]'
         }`;
 
   const label = (
     <>
-      <span aria-hidden className={variant === 'menu' ? 'text-lg' : 'text-sm'}>
-        {link.icon}
-      </span>
-      <span className={variant === 'tab' && active ? 'underline decoration-[#6b2340] decoration-2 underline-offset-4' : undefined}>
-        {link.label}
-      </span>
+      {link.label}
+      {variant === 'bar' && active && (
+        <span className={`absolute -bottom-2 right-0 left-0 h-px ${overlay ? 'bg-white' : 'bg-[#6b2340]'}`} />
+      )}
     </>
   );
 
@@ -182,8 +186,7 @@ export default function SiteHeader() {
           : 'border-b border-[#ead8dc] bg-white/95 shadow-sm backdrop-blur-md'
       }`}
     >
-      <div className="mx-auto max-w-7xl px-3 py-3 sm:px-6">
-      <div className="flex items-center justify-between gap-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-3 sm:px-6">
         <Link href="/" className="flex min-w-0 items-center gap-2.5">
           <img src="/logo.svg?v=8" alt="" className="h-10 w-10 shrink-0 sm:h-11 sm:w-11" />
           <div className="min-w-0">
@@ -201,6 +204,19 @@ export default function SiteHeader() {
             )}
           </div>
         </Link>
+
+        <nav className="hidden items-center gap-4 md:flex lg:gap-7" aria-label="ניווט ראשי">
+          {links.map((link) => (
+            <NavLink
+              key={link.href}
+              link={link}
+              active={isActive(pathname, link.href)}
+              overlay={overlay}
+              guestOnClick={!loggedIn && link.href === '/account' ? openAccountAuth : undefined}
+              forceHub={loggedIn && link.href === '/account'}
+            />
+          ))}
+        </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {!loggedIn && (
@@ -265,22 +281,6 @@ export default function SiteHeader() {
         </div>
       </div>
 
-      <nav
-        className="scrollbar-hide mx-auto mt-1 hidden max-w-7xl snap-x snap-mandatory gap-1 overflow-x-auto rounded-t-2xl border border-b-0 border-[#ead8dc] bg-[#f6eef1] px-1 pt-1 md:flex lg:px-2"
-        aria-label="ניווט ראשי"
-      >
-        {links.map((link) => (
-          <NavLink
-            key={link.href}
-            link={link}
-            active={isActive(pathname, link.href)}
-            guestOnClick={!loggedIn && link.href === '/account' ? openAccountAuth : undefined}
-            forceHub={loggedIn && link.href === '/account'}
-          />
-        ))}
-      </nav>
-      </div>
-
       {mobileOpen && (
         <>
           <button
@@ -336,7 +336,7 @@ export default function SiteHeader() {
         </>
       )}
     </header>
-    {!overlay && <div className="h-[3.85rem] md:h-[7.35rem]" aria-hidden />}
+    {!overlay && <div className="h-[3.85rem] sm:h-[4.15rem]" aria-hidden />}
     </>
   );
 }
