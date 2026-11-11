@@ -73,3 +73,22 @@ img {
   color: #2a1f22;
   line-height: 1.2;
 }
+
+.reviews-scroller {
+  scrollbar-color: #c44b8a #f6e4ee;
+  scrollbar-width: thin;
+}
+
+.reviews-scroller::-webkit-scrollbar {
+  height: 10px;
+}
+
+.reviews-scroller::-webkit-scrollbar-track {
+  background: #f6e4ee;
+  border-radius: 999px;
+}
+
+.reviews-scroller::-webkit-scrollbar-thumb {
+  background: #c44b8a;
+  border-radius: 999px;
+}

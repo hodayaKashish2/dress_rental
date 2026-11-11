@@ -40,7 +40,6 @@ export default function ReviewsCarousel({ reviews }: Props) {
 
   return (
     <div>
-      <p className="mb-3 text-center text-[11px] font-bold text-[#7a5e64]">גררי לצדדים כדי לראות עוד תגובות</p>
       <div
         ref={scrollerRef}
         dir="rtl"
@@ -48,29 +47,23 @@ export default function ReviewsCarousel({ reviews }: Props) {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        className="flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto pb-3 active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="reviews-scroller flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto pb-4 active:cursor-grabbing"
       >
         {reviews.map((review) => (
           <article
             key={review.id}
-            className="flex w-[min(78vw,24rem)] shrink-0 snap-start flex-col justify-between rounded-2xl border border-[#ead8dc] bg-white/80 p-6 shadow-sm backdrop-blur-md"
+            className="flex w-[min(78vw,18rem)] shrink-0 snap-start flex-col items-center rounded-2xl bg-[#fbf3f7] px-6 py-7 text-center"
           >
-            <div>
-              <div className="mb-3 flex gap-0.5 text-[#6b2340]">
-                {Array.from({ length: review.stars }).map((_, index) => (
-                  <span key={index}>⭐</span>
-                ))}
-              </div>
-              <p className="text-xs italic leading-relaxed text-[#6e5e62]">&quot;{review.text}&quot;</p>
+            <div className="mb-3 flex gap-0.5 text-[#c2185b]">
+              {Array.from({ length: review.stars }).map((_, index) => (
+                <span key={index}>★</span>
+              ))}
             </div>
-            <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-3">
-              <span className="text-xs font-bold text-neutral-900">{review.name}</span>
-              {review.role ? (
-                <span className="rounded-full bg-[#f6eef1] px-2 py-0.5 text-[10px] font-bold text-[#6b2340]">
-                  {review.role}
-                </span>
-              ) : null}
-            </div>
+            <p className="text-sm font-bold leading-relaxed text-[#2a1f22]">&quot;{review.text}&quot;</p>
+            <p className="mt-4 text-xs text-[#6f6570]">
+              {review.name}
+              {review.role ? ` · ${review.role}` : ''}
+            </p>
           </article>
         ))}
       </div>

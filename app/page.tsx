@@ -1936,16 +1936,17 @@ export default function Home() {
       )}
 
       {/* 💬 סקשן חוות דעת לקוחות */}
-      <section className="max-w-6xl mx-auto px-4 mt-24 relative z-10">
-        <div className="text-center mb-10">
-          <span className="text-xs font-black text-[#4a152c] tracking-wide">חוויות אמיתיות</span>
-          <h2 className="text-3xl font-serif italic text-neutral-900 mt-1">מה המשתמשות מספרות</h2>
-          <div className="w-12 h-[1.5px] bg-[#6b2340] mx-auto mt-3"></div>
+      <section className="relative z-10 mx-auto mt-24 max-w-6xl px-4">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div className="text-right">
+            <p className="text-sm font-bold text-[#c2185b]">חוויות אמיתיות</p>
+            <h2 className="mt-1 text-3xl font-black text-[#2a1030] sm:text-4xl">מה המשתמשות מספרות</h2>
+          </div>
           <button
             onClick={openAddReviewForm}
-            className="mt-5 px-5 py-2.5 bg-gradient-to-r from-[#6b2340] to-[#4a152c] hover:from-[#4a152c] hover:to-[#6b2340] text-white rounded-xl text-xs font-bold transition-all shadow-md"
+            className="rounded-full bg-[#f3e4ee] px-5 py-2.5 text-sm font-bold text-[#7a3e78] transition hover:bg-[#ead4e6]"
           >
-            ✍️ הוסיפי תגובה
+            הוסיפי תגובה
           </button>
         </div>
 
@@ -2043,25 +2044,22 @@ export default function Home() {
       )}
 
       {/* 👑 אזור שאלות נפוצות */}
-      <section className="relative z-10 mx-auto mt-24 mb-16 w-full max-w-6xl px-4">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-serif italic text-neutral-900">שאלות ותשובות נפוצות</h2>
-          <div className="w-12 h-[1.5px] bg-[#6b2340] mx-auto mt-3"></div>
-        </div>
-        <div className="flex flex-col gap-3">
+      <section className="relative z-10 mx-auto mb-16 mt-24 w-full max-w-4xl px-4">
+        <h2 className="mb-8 text-center text-3xl font-black text-[#2a1030] sm:text-4xl">שאלות ותשובות נפוצות</h2>
+        <div className="overflow-hidden rounded-3xl bg-white shadow-[0_8px_30px_rgba(90,30,80,0.06)]">
           {FAQS.map((faq, idx) => {
             const isOpen = activeFaq === idx;
             return (
-              <div key={idx} className="bg-white border border-[#ebd4a8] rounded-xl overflow-hidden shadow-sm transition-all">
-                <button 
+              <div key={idx} className="border-b border-[#f0e4ea] last:border-b-0">
+                <button
                   onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full p-4 text-right flex justify-between items-center font-bold text-xs text-neutral-900 hover:bg-neutral-50 transition"
+                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-right transition hover:bg-[#fdf7fa]"
                 >
-                  <span>{faq.q}</span>
-                  <span className="text-[#4a152c] text-base">{isOpen ? '−' : '＋'}</span>
+                  <span className="text-sm font-bold text-[#5c2d62] sm:text-base">{faq.q}</span>
+                  <span className="text-xl font-light leading-none text-[#7a3e78]">{isOpen ? '−' : '+'}</span>
                 </button>
                 {isOpen && (
-                  <div className="border-t border-[#6b2340] bg-[#6b2340] p-4 text-xs leading-relaxed text-white">
+                  <div className="px-6 pb-5 text-sm leading-relaxed text-[#5c5360]">
                     {faq.a}
                   </div>
                 )}
@@ -2466,7 +2464,7 @@ export default function Home() {
         href={WHATSAPP_LINK}
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed bottom-4 right-4 z-40 flex items-center justify-center rounded-full bg-[#6b2340] p-3 text-white shadow-[0_8px_30px_rgba(107,35,64,0.35)] transition-all hover:scale-105 hover:bg-[#4a152c] sm:bottom-6 sm:right-6 sm:p-3.5"
+        className="fixed bottom-4 right-4 z-40 flex items-center justify-center rounded-full bg-[#e85aad] p-3 text-white shadow-[0_8px_30px_rgba(232,90,173,0.4)] transition-all hover:scale-105 hover:bg-[#d43d96] sm:bottom-6 sm:right-6 sm:p-3.5"
         title="WhatsApp"
       >
         💬
