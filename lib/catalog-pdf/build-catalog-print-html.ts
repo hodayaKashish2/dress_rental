@@ -75,8 +75,8 @@ export function buildCatalogPrintHtml(
     body {
       margin: 0;
       font-family: Arial, 'Segoe UI', Tahoma, sans-serif;
-      background: #fbf8f0;
-      color: #3d2f24;
+      background: #faf7f5;
+      color: #2a1f22;
       direction: rtl;
     }
     .catalog-back-bar {
@@ -88,37 +88,37 @@ export function buildCatalogPrintHtml(
       justify-content: space-between;
       gap: 8px;
       padding: 8px 12px;
-      background: linear-gradient(90deg, #fffdf9, #faf6eb);
-      border-bottom: 1px solid #e6c687;
+      background: linear-gradient(90deg, #fffdf9, #faf7f5);
+      border-bottom: 1px solid #d4b4bb;
       box-shadow: 0 1px 4px rgba(212, 175, 55, 0.12);
     }
     .catalog-back-bar a {
-      color: #8b6508;
+      color: #6b2340;
       font-size: 11px;
       font-weight: 800;
       text-decoration: none;
     }
     .catalog-back-bar span {
-      color: #6e634c;
+      color: #6e5e62;
       font-size: 9px;
       font-weight: 600;
     }
     .page-header {
       padding: 10px 12px 8px;
       text-align: center;
-      border-bottom: 1px solid #e6c687;
-      background: linear-gradient(180deg, #fffdf9, #faf6eb);
+      border-bottom: 1px solid #d4b4bb;
+      background: linear-gradient(180deg, #fffdf9, #faf7f5);
     }
     .page-header h1 {
       margin: 0 0 2px;
       font-size: 16px;
       font-weight: 800;
-      color: #8b6508;
+      color: #6b2340;
     }
     .page-header p {
       margin: 0;
       font-size: 8px;
-      color: #6e634c;
+      color: #6e5e62;
       line-height: 1.35;
     }
     .grid {
@@ -133,7 +133,7 @@ export function buildCatalogPrintHtml(
       display: flex;
       flex-direction: column;
       background: #fff;
-      border: 1px solid #ebd3a4;
+      border: 1px solid #ead8dc;
       border-radius: 6px;
       overflow: hidden;
       box-shadow: 0 1px 3px rgba(212, 175, 55, 0.08);
@@ -142,7 +142,7 @@ export function buildCatalogPrintHtml(
       position: relative;
       width: 100%;
       aspect-ratio: 3 / 4;
-      background: #f5f0e6;
+      background: #f6eef1;
       overflow: hidden;
     }
     .dress-image-wrap img {
@@ -165,14 +165,14 @@ export function buildCatalogPrintHtml(
       top: 3px;
       right: 3px;
       z-index: 1;
-      background: linear-gradient(90deg, #d4af37, #b8860b);
+      background: linear-gradient(90deg, #6b2340, #6b2340);
       color: #fff;
       font-size: 6px;
       font-weight: 800;
       line-height: 1;
       padding: 2px 4px;
       border-radius: 3px;
-      border: 1px solid #c9a227;
+      border: 1px solid #8a3a55;
     }
     .dress-body {
       padding: 3px 4px 4px;
@@ -211,19 +211,19 @@ export function buildCatalogPrintHtml(
       white-space: nowrap;
     }
     .meta-city {
-      background: #f4ebd4;
+      background: #f6eef1;
       color: #5c4510;
-      border-color: #decfa8;
+      border-color: #e3cfd3;
     }
     .meta-rent {
-      background: linear-gradient(90deg, #d4af37, #b8860b);
+      background: linear-gradient(90deg, #6b2340, #6b2340);
       color: #fff;
-      border-color: #c9a227;
+      border-color: #8a3a55;
     }
     .meta-sale {
       background: #fff;
-      color: #b8860b;
-      border-color: #d4af37;
+      color: #6b2340;
+      border-color: #6b2340;
     }
     .dress-price {
       margin: 0;
