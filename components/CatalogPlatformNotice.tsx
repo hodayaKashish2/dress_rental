@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import CatalogAccessActions from '@/components/CatalogAccessActions';
 import { CATALOG_PLATFORM_NOTICE } from '@/lib/commission';
 
 /** שורת מידע קומפקטית בראש הקטלוג */
@@ -13,15 +12,12 @@ export default function CatalogPlatformNotice() {
         <p className="mt-1 text-[11px] leading-relaxed text-[#5c4650] sm:text-xs">{message}</p>
       </div>
 
-      <div className="flex shrink-0 items-center gap-4">
-        <CatalogAccessActions />
-        <Link
-          href="/terms"
-          className="text-[12px] font-bold text-[#3a2430] underline decoration-[#3a2430]/70 underline-offset-4 transition-colors hover:text-[#6b2340]"
-        >
-          {termsLabel}
-        </Link>
-      </div>
+      <Link
+        href="/terms"
+        className="shrink-0 text-[12px] font-bold text-[#3a2430] underline decoration-[#3a2430]/70 underline-offset-4 transition-colors hover:text-[#6b2340]"
+      >
+        {termsLabel}
+      </Link>
     </div>
   );
 }
