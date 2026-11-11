@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
 import SiteHero from '@/components/SiteHero';
+import ReviewsCarousel from '@/components/ReviewsCarousel';
 import OwnerPlatformNotice from '@/components/OwnerPlatformNotice';
 import FormError from '@/components/FormError';
 import CatalogFilterDrawer from '@/components/CatalogFilterDrawer';
@@ -1955,22 +1956,7 @@ export default function Home() {
             <p className="text-sm text-[#6e5e62]">עדיין אין תגובות. תהיי הראשונה לשתף!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {reviewsList.map((rev) => (
-              <div key={rev.id} className="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-[#ead8dc] shadow-sm flex flex-col justify-between">
-                <div>
-                  <div className="flex text-[#6b2340] gap-0.5 mb-3">
-                    {Array.from({ length: rev.stars }).map((_, i) => <span key={i}>⭐</span>)}
-                  </div>
-                  <p className="text-xs text-[#6e5e62] italic leading-relaxed">&quot;{rev.text}&quot;</p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-neutral-100 flex justify-between items-center">
-                  <span className="text-xs font-bold text-neutral-900">{rev.name}</span>
-                  <span className="text-[10px] bg-[#f6eef1] text-[#6b2340] px-2 py-0.5 rounded-full font-bold">{rev.role}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ReviewsCarousel reviews={reviewsList} />
         )}
       </section>
 
