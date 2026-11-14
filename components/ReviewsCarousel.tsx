@@ -13,6 +13,7 @@ export default function ReviewsCarousel({ reviews }: Props) {
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'touch') return;
+    if ((event.target as HTMLElement).closest('[data-review-text]')) return;
     const scroller = scrollerRef.current;
     if (!scroller) return;
     dragRef.current = {
@@ -52,7 +53,7 @@ export default function ReviewsCarousel({ reviews }: Props) {
         {reviews.map((review) => (
           <article
             key={review.id}
-            className="flex w-[calc(100%-2.25rem)] max-w-[24rem] shrink-0 snap-start flex-col justify-between rounded-2xl border border-[#ead8dc] bg-white p-4 shadow-sm sm:w-[min(70%,24rem)] sm:p-6"
+            className="flex w-[62%] max-w-[15rem] shrink-0 snap-start flex-col rounded-2xl border border-[#ead8dc] bg-white p-4 shadow-sm sm:w-60 sm:p-5"
           >
             <div>
               <div className="mb-3 flex gap-0.5 text-[#6b2340]">
@@ -60,7 +61,12 @@ export default function ReviewsCarousel({ reviews }: Props) {
                   <span key={index}>⭐</span>
                 ))}
               </div>
-              <p className="text-sm italic leading-relaxed text-[#6e5e62] sm:text-xs">&quot;{review.text}&quot;</p>
+              <div
+                data-review-text
+                className="max-h-24 overflow-y-auto overscroll-y-contain pe-1 text-sm italic leading-relaxed text-[#6e5e62] touch-pan-y [scrollbar-color:#6b2340_transparent] [scrollbar-width:thin] sm:max-h-28 sm:text-xs"
+              >
+                <p>&quot;{review.text}&quot;</p>
+              </div>
             </div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-neutral-100 pt-3">
               <span className="text-xs font-bold text-neutral-900">{review.name}</span>
