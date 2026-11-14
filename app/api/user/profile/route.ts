@@ -9,8 +9,6 @@ import { formatPhoneForStorage, phoneValidationMessage } from '@/lib/israeli-pho
 import { getSupabaseAdmin, isSupabaseConfigured } from '@/lib/supabase/server';
 import { formatSiteUsersDbError } from '@/lib/db-errors';
 import {
-  EMAIL_ALREADY_USED_MESSAGE,
-  isEmailUsedByAnotherUser,
   marketingOptInUpgradeHint,
   selectSiteUserProfile,
   updateSiteUserProfile,
@@ -90,10 +88,6 @@ export async function PATCH(request: Request) {
     }
 
     const supabase = getSupabaseAdmin();
-    if (await isEmailUsedByAnotherUser(supabase, email, user.userId)) {
-      return NextResponse.json({ error: EMAIL_ALREADY_USED_MESSAGE }, { status: 409 });
-    }
-
     const result = await updateSiteUserProfile(supabase, user.userId, {
       display_name: displayName,
       phone: phoneStored,
@@ -124,10 +118,6 @@ export async function PATCH(request: Request) {
     return response;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'שגיאה';
-    const normalized = message.toLowerCase();
-    if (normalized.includes('duplicate') && normalized.includes('email')) {
-      return NextResponse.json({ error: EMAIL_ALREADY_USED_MESSAGE }, { status: 409 });
-    }
     return NextResponse.json(
       { error: formatSiteUsersDbError(message) },
       { status: 503 }

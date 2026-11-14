@@ -22,26 +22,6 @@ export function marketingOptInUpgradeHint() {
   return 'חסרה עמודת marketing_emails_opt_in. הריצי את supabase/upgrade-v15-marketing-opt-in.sql ב-Supabase SQL Editor.';
 }
 
-export const EMAIL_ALREADY_USED_MESSAGE =
-  'כתובת האימייל הזו כבר רשומה אצל משתמשת אחרת';
-
-export async function isEmailUsedByAnotherUser(
-  supabase: SupabaseClient,
-  email: string,
-  exceptUserId?: string
-) {
-  const normalized = email.trim().toLowerCase();
-  if (!normalized) return false;
-
-  const pattern = normalized.replace(/[%_\\]/g, '\\$&');
-  let query = supabase.from('site_users').select('id').ilike('email', pattern).limit(5);
-  if (exceptUserId) query = query.neq('id', exceptUserId);
-
-  const { data, error } = await query;
-  if (error) throw error;
-  return (data || []).some((row) => String(row.id) !== String(exceptUserId || ''));
-}
-
 function mapProfileRow(
   row: Record<string, unknown>,
   hasMarketingColumn: boolean
