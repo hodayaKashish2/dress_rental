@@ -56,7 +56,7 @@ export default function ReviewsCarousel({ reviews }: Props) {
         {reviews.map((review) => (
           <article
             key={review.id}
-            className="flex w-[calc((100%-0.75rem)/2)] shrink-0 snap-start flex-col rounded-2xl border border-[#ead8dc] bg-white p-3 shadow-sm sm:w-60 sm:p-5"
+            className="flex w-[calc((100%-0.75rem)/2)] min-w-0 shrink-0 snap-start flex-col rounded-2xl border border-[#ead8dc] bg-white p-3 shadow-sm sm:w-60 sm:p-5"
           >
             <div>
               <div className="mb-3 flex gap-0.5 text-[#6b2340]">
@@ -66,13 +66,13 @@ export default function ReviewsCarousel({ reviews }: Props) {
               </div>
               <div
                 data-review-text
-                className="max-h-24 overflow-y-auto overscroll-y-contain pe-1 text-sm italic leading-relaxed text-[#6e5e62] touch-pan-y [scrollbar-color:#6b2340_transparent] [scrollbar-width:thin] sm:max-h-28 sm:text-xs"
+                className="max-h-24 min-w-0 overflow-x-hidden overflow-y-auto overscroll-y-contain pe-1 text-sm italic leading-relaxed text-[#6e5e62] touch-pan-y [overflow-wrap:anywhere] [scrollbar-color:#6b2340_transparent] [scrollbar-width:thin] sm:max-h-28 sm:text-xs"
               >
-                <p>&quot;{review.text}&quot;</p>
+                <p className="break-words">&quot;{review.text}&quot;</p>
               </div>
             </div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-neutral-100 pt-3">
-              <span className="text-xs font-bold text-neutral-900">{review.name}</span>
+              <span className="min-w-0 break-words text-xs font-bold text-neutral-900">{review.name}</span>
               {review.role ? (
                 <span className="rounded-full bg-[#f6eef1] px-2 py-0.5 text-[10px] font-bold text-[#6b2340]">
                   {review.role}

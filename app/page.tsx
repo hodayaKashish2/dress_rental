@@ -99,6 +99,7 @@ export default function Home() {
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewThanksOpen, setReviewThanksOpen] = useState(false);
   const [newReview, setNewReview] = useState({ name: '', role: '', text: '', stars: 5 });
 
   // פילטרים
@@ -606,7 +607,7 @@ export default function Home() {
 
       closeAddReviewModal();
       setNewReview({ name: '', role: '', text: '', stars: 5 });
-      alert(data.message || 'תודה! התגובה נשלחה.');
+      setReviewThanksOpen(true);
     } catch (error) {
       console.error('Error submitting review:', error);
       alert('תקלה בשליחת התגובה. נסי שוב.');
@@ -1963,6 +1964,27 @@ export default function Home() {
         </div>
       </section>
 
+      {reviewThanksOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/50 p-4">
+          <div className="w-full max-w-sm rounded-3xl bg-white px-6 py-8 text-center shadow-2xl" style={{ direction: 'rtl' }}>
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f6eef1] text-2xl font-black text-[#6b2340]">
+              ✓
+            </div>
+            <h3 className="text-xl font-black text-[#2a1030]">התגובה נשלחה</h3>
+            <p className="mt-3 text-sm leading-relaxed text-[#5c4650]">
+              תודה ששיתפת. התגובה תפורסם באתר אחרי בדיקה קצרה.
+            </p>
+            <button
+              type="button"
+              onClick={() => setReviewThanksOpen(false)}
+              className="mt-6 w-full rounded-full bg-[#6b2340] py-3 text-sm font-bold text-white transition hover:bg-[#4a152c]"
+            >
+              סגור
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ✍️ מודאל הוספת תגובה */}
       {isAddReviewOpen && (
         <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
@@ -2029,7 +2051,7 @@ export default function Home() {
                   placeholder="ספרי על החוויה שלך..."
                   value={newReview.text}
                   onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
-                  className="w-full p-2.5 bg-white border border-[#e3cfd3] rounded-xl text-xs text-[#2a1f22] placeholder:text-[#7a5e64] font-medium focus:outline-none focus:border-[#6b2340] resize-none"
+                  className="w-full overflow-x-hidden break-words p-2.5 bg-white border border-[#e3cfd3] rounded-xl text-xs text-[#2a1f22] placeholder:text-[#7a5e64] font-medium focus:outline-none focus:border-[#6b2340] resize-none [overflow-wrap:anywhere]"
                 />
               </div>
 
