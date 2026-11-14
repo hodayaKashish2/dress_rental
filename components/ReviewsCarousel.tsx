@@ -41,6 +41,9 @@ export default function ReviewsCarousel({ reviews }: Props) {
 
   return (
     <div>
+      {reviews.length > 2 ? (
+        <p className="mb-3 text-center text-xs font-semibold text-[#6b2340]">החליקי שמאלה כדי לראות עוד תגובות</p>
+      ) : null}
       <div
         ref={scrollerRef}
         dir="rtl"
@@ -53,7 +56,7 @@ export default function ReviewsCarousel({ reviews }: Props) {
         {reviews.map((review) => (
           <article
             key={review.id}
-            className="flex w-[62%] max-w-[15rem] shrink-0 snap-start flex-col rounded-2xl border border-[#ead8dc] bg-white p-4 shadow-sm sm:w-60 sm:p-5"
+            className="flex w-[calc((100%-0.75rem)/2)] shrink-0 snap-start flex-col rounded-2xl border border-[#ead8dc] bg-white p-3 shadow-sm sm:w-60 sm:p-5"
           >
             <div>
               <div className="mb-3 flex gap-0.5 text-[#6b2340]">
