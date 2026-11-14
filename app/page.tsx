@@ -1936,16 +1936,16 @@ export default function Home() {
       )}
 
       {/* 💬 סקשן חוות דעת לקוחות */}
-      <section className="relative z-10 mx-auto mt-24 max-w-6xl px-4">
-        <div className="rounded-3xl bg-[#f3e4e8] px-4 py-8 sm:px-8">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div className="text-right">
+      <section className="relative z-10 mx-auto mt-16 w-full min-w-0 max-w-6xl px-3 sm:mt-24 sm:px-4">
+        <div className="overflow-hidden rounded-3xl bg-[#f3e4e8] px-3 py-6 sm:px-8 sm:py-8">
+        <div className="mb-5 flex flex-col items-start gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0 text-right">
             <p className="text-sm font-bold text-[#6b2340]">חוויות אמיתיות</p>
-            <h2 className="mt-1 text-3xl font-black text-[#2a1030] sm:text-4xl">מה המשתמשות מספרות</h2>
+            <h2 className="mt-1 text-2xl font-black leading-tight text-[#2a1030] sm:text-4xl">מה המשתמשות מספרות</h2>
           </div>
           <button
             onClick={openAddReviewForm}
-            className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#6b2340] transition hover:bg-[#fff7fa]"
+            className="shrink-0 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#6b2340] transition hover:bg-[#fff7fa]"
           >
             הוסיפי תגובה
           </button>

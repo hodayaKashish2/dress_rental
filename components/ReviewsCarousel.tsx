@@ -47,12 +47,12 @@ export default function ReviewsCarousel({ reviews }: Props) {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        className="reviews-scroller flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto pb-4 active:cursor-grabbing"
+        className="reviews-scroller flex w-full min-w-0 cursor-grab snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-4 touch-pan-x active:cursor-grabbing sm:gap-4"
       >
         {reviews.map((review) => (
           <article
             key={review.id}
-            className="flex w-[min(78vw,24rem)] shrink-0 snap-start flex-col justify-between rounded-2xl border border-[#ead8dc] bg-white p-6 shadow-sm"
+            className="flex w-[calc(100%-2.25rem)] max-w-[24rem] shrink-0 snap-start flex-col justify-between rounded-2xl border border-[#ead8dc] bg-white p-4 shadow-sm sm:w-[min(70%,24rem)] sm:p-6"
           >
             <div>
               <div className="mb-3 flex gap-0.5 text-[#6b2340]">
@@ -60,9 +60,9 @@ export default function ReviewsCarousel({ reviews }: Props) {
                   <span key={index}>⭐</span>
                 ))}
               </div>
-              <p className="text-xs italic leading-relaxed text-[#6e5e62]">&quot;{review.text}&quot;</p>
+              <p className="text-sm italic leading-relaxed text-[#6e5e62] sm:text-xs">&quot;{review.text}&quot;</p>
             </div>
-            <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-3">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-neutral-100 pt-3">
               <span className="text-xs font-bold text-neutral-900">{review.name}</span>
               {review.role ? (
                 <span className="rounded-full bg-[#f6eef1] px-2 py-0.5 text-[10px] font-bold text-[#6b2340]">
